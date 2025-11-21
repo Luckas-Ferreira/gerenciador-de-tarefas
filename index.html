@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rastreador de Foco Diário</title>
+    <title>RWS - Foco e Produtividade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Configuração do Tailwind para Modo Escuro Manual -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            color: #e2e8f0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .card-transition {
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         .timer-display {
             font-variant-numeric: tabular-nums;
         }
 
-        /* Animação suave para a barra de progresso */
         .progress-bar {
             transition: width 1s linear;
         }
@@ -30,91 +40,111 @@
         .btn-action:active {
             transform: scale(0.95);
         }
+        
+        /* Esconde as setinhas do input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4 bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-e2e8f0 transition-colors duration-300">
 
-    <div class="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 card-transition relative">
         
+        <!-- Botão de Tema (Posicionado Absolutamente) -->
+        <button onclick="toggleTheme()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-yellow-500 dark:text-yellow-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center shadow-sm">
+            <i class="fa-solid fa-sun dark:hidden"></i>
+            <i class="fa-solid fa-moon hidden dark:block"></i>
+        </button>
+
         <!-- Header -->
-        <div class="bg-slate-900 p-6 text-center border-b border-slate-700">
-            <h1 class="text-2xl font-bold text-blue-400">RWS</h1>
-            <p class="text-slate-400 text-sm mt-1">Gerencie suas tarefas e tempo</p>
+        <div class="bg-slate-50 dark:bg-slate-900 p-6 text-center border-b border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">RWS</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Gerencie suas tarefas e tempo</p>
         </div>
 
         <!-- Configuração de Tempo -->
-        <div class="p-4 bg-slate-800/50 flex justify-between items-center border-b border-slate-700/50">
-            <label class="text-slate-400 text-sm">Tempo por tarefa (min):</label>
+        <div class="p-4 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center border-b border-slate-200/50 dark:border-slate-700/50 transition-colors duration-300">
+            <label class="text-slate-500 dark:text-slate-400 text-sm font-semibold">Tempo por tarefa (min):</label>
             <div class="flex items-center gap-2">
-                <button onclick="adjustTimeInput(-1)" class="w-8 h-8 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold">-</button>
+                <button onclick="adjustTimeInput(-1)" class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold transition">-</button>
                 <input type="number" id="targetMinutes" value="10" min="1" max="120" 
-                    class="w-16 bg-slate-900 border border-slate-600 rounded p-1 text-center text-white font-bold focus:outline-none focus:border-blue-500">
-                <button onclick="adjustTimeInput(1)" class="w-8 h-8 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold">+</button>
+                    class="w-16 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded p-1 text-center text-slate-800 dark:text-white font-bold focus:outline-none focus:border-blue-500 transition-colors">
+                <button onclick="adjustTimeInput(1)" class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold transition">+</button>
             </div>
         </div>
 
         <!-- Área Principal do Cronômetro -->
         <div class="p-8 flex flex-col items-center relative">
             <!-- Círculo/Barra de Progresso Visual -->
-            <div class="w-full bg-slate-700 h-4 rounded-full mb-6 overflow-hidden relative">
+            <div class="w-full bg-slate-200 dark:bg-slate-700 h-4 rounded-full mb-6 overflow-hidden relative transition-colors">
                 <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-blue-500 to-purple-500 w-0"></div>
             </div>
 
             <!-- Display do Tempo -->
-            <div class="text-7xl font-bold timer-display tracking-tight text-white mb-2" id="timerDisplay">
+            <div class="text-7xl font-bold timer-display tracking-tight text-slate-800 dark:text-white mb-2 transition-colors" id="timerDisplay">
                 10:00
             </div>
-            <p id="statusText" class="text-slate-400 text-sm font-medium mb-6">Pronto para começar</p>
+            <p id="statusText" class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-6 transition-colors">Pronto para começar</p>
 
             <!-- Controles do Cronômetro -->
             <div class="flex gap-4 w-full justify-center">
-                <button id="btnStart" onclick="toggleTimer()" class="btn-action flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-900/20 flex items-center justify-center gap-2">
+                <button id="btnStart" onclick="toggleTimer()" class="btn-action flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-900/20 dark:shadow-none flex items-center justify-center gap-2">
                     <i class="fa-solid fa-play"></i> <span id="btnStartText">Iniciar</span>
                 </button>
                 
-                <button onclick="resetTimer()" class="btn-action w-14 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl font-bold flex items-center justify-center" title="Resetar Cronômetro">
+                <button onclick="resetTimer()" class="btn-action w-14 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center transition-colors" title="Resetar Cronômetro">
                     <i class="fa-solid fa-rotate-left"></i>
                 </button>
             </div>
         </div>
 
         <!-- Estatísticas e Ajustes -->
-        <div class="bg-slate-900 p-6 rounded-t-3xl border-t border-slate-700 mt-2">
+        <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-t-3xl border-t border-slate-200 dark:border-slate-700 mt-2 transition-colors">
             <div class="grid grid-cols-2 gap-6">
                 
                 <!-- Contador de Tarefas -->
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col items-center">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tarefas Feitas</span>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center transition-colors shadow-sm">
+                    <span class="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tarefas Feitas</span>
                     <div class="flex items-center gap-3 mb-2">
-                        <button onclick="manualAdjustTask(-1)" class="text-slate-500 hover:text-red-400 transition p-1">
+                        <button onclick="manualAdjustTask(-1)" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition p-1">
                             <i class="fa-solid fa-minus-circle text-xl"></i>
                         </button>
-                        <span id="taskCount" class="text-4xl font-bold text-blue-400">0</span>
-                        <button onclick="manualAdjustTask(1)" class="text-slate-500 hover:text-green-400 transition p-1">
+                        <span id="taskCount" class="text-4xl font-bold text-blue-600 dark:text-blue-400 transition-colors">0</span>
+                        <button onclick="manualAdjustTask(1)" class="text-slate-400 hover:text-green-500 dark:hover:text-green-400 transition p-1">
                             <i class="fa-solid fa-plus-circle text-xl"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Tempo Total -->
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col items-center justify-center">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tempo Total</span>
-                    <span id="totalTimeDisplay" class="text-2xl font-bold text-purple-400">0m</span>
-                    <span class="text-xs text-slate-500 mt-1">acumulado</span>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center transition-colors shadow-sm">
+                    <span class="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tempo Total</span>
+                    <span id="totalTimeDisplay" class="text-2xl font-bold text-purple-600 dark:text-purple-400 transition-colors">0m</span>
+                    <span class="text-xs text-slate-400 dark:text-slate-500 mt-1">acumulado</span>
                 </div>
+            </div>
 
+            <!-- Resetar Dados (LocalStorage) -->
+            <div class="mt-6 text-center">
+                <button onclick="clearAllData()" class="text-xs text-slate-400 hover:text-red-500 underline transition">
+                    Limpar histórico e estatísticas
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Áudio escondido para o alarme -->
+    <!-- Lógica -->
     <script>
-        // Variáveis de Estado
+        // --- Variáveis de Estado ---
         let intervalId = null;
         let isRunning = false;
-        let timeRemaining = 600; // Segundos (padrão 10 min)
-        let totalDuration = 600; // Referência para a barra de progresso
+        let timeRemaining = 600; 
+        let totalDuration = 600; 
         
+        // Dados que serão salvos
         let tasksCompleted = 0;
         let totalSecondsFocused = 0;
 
@@ -122,94 +152,108 @@
         const timerDisplay = document.getElementById('timerDisplay');
         const progressBar = document.getElementById('progressBar');
         const btnStart = document.getElementById('btnStart');
-        const btnStartText = document.getElementById('btnStartText');
         const statusText = document.getElementById('statusText');
         const taskCountDisplay = document.getElementById('taskCount');
         const totalTimeDisplay = document.getElementById('totalTimeDisplay');
         const inputMinutes = document.getElementById('targetMinutes');
+        const htmlElement = document.documentElement;
 
-        // Inicialização
+        // --- Inicialização e LocalStorage ---
+        
         function init() {
+            loadData();
             updateTimerDisplay();
-            // Listener para mudança no input de tempo
+            // Configura input manual
             inputMinutes.addEventListener('change', () => {
+                saveData(); // Salva a preferência de tempo
                 if (!isRunning) resetTimer();
             });
         }
 
-        // Função para formatar segundos em MM:SS
+        // Salva os dados no navegador
+        function saveData() {
+            const data = {
+                tasks: tasksCompleted,
+                totalTime: totalSecondsFocused,
+                prefMinutes: inputMinutes.value,
+                theme: htmlElement.classList.contains('dark') ? 'dark' : 'light'
+            };
+            localStorage.setItem('rws_tracker_data', JSON.stringify(data));
+        }
+
+        // Carrega os dados do navegador
+        function loadData() {
+            const saved = localStorage.getItem('rws_tracker_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                // Restaurar valores
+                tasksCompleted = data.tasks || 0;
+                totalSecondsFocused = data.totalTime || 0;
+                
+                if (data.prefMinutes) {
+                    inputMinutes.value = data.prefMinutes;
+                    totalDuration = parseInt(data.prefMinutes) * 60;
+                    timeRemaining = totalDuration;
+                }
+
+                // Restaurar Tema
+                if (data.theme === 'light') {
+                    htmlElement.classList.remove('dark');
+                } else {
+                    htmlElement.classList.add('dark');
+                }
+            }
+            
+            updateStats();
+        }
+
+        // Limpar tudo (Reset "Hard")
+        function clearAllData() {
+            if(confirm("Tem certeza? Isso vai zerar seu contador de tarefas e tempo acumulado.")) {
+                tasksCompleted = 0;
+                totalSecondsFocused = 0;
+                saveData();
+                updateStats();
+                resetTimer();
+            }
+        }
+
+        // Alternar Tema
+        function toggleTheme() {
+            htmlElement.classList.toggle('dark');
+            saveData();
+        }
+
+        // --- Funções do Cronômetro (Core) ---
+
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60);
             const s = seconds % 60;
             return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        // Função para formatar o tempo total acumulado (ex: 1h 30m)
         function formatTotalTime(seconds) {
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
-            
             if (h > 0) return `${h}h ${m}m`;
             return `${m}m`;
         }
 
-        // Atualiza o display do cronômetro
         function updateTimerDisplay() {
             timerDisplay.textContent = formatTime(timeRemaining);
-            
-            // Atualiza barra de progresso
-            // Inverte a lógica: começa vazio e enche até o final
             const progressPercent = ((totalDuration - timeRemaining) / totalDuration) * 100;
             progressBar.style.width = `${progressPercent}%`;
         }
 
-        // Toca um som de alerta usando Web Audio API (não precisa de arquivo externo)
-        function playAlarm() {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return; // Navegador não suporta
-            
-            const ctx = new AudioContext();
-            
-            // Cria oscilador
-            const osc = ctx.createOscillator();
-            const gainNode = ctx.createGain();
-            
-            osc.connect(gainNode);
-            gainNode.connect(ctx.destination);
-            
-            osc.type = 'sine';
-            
-            // Sequência de bips
-            const now = ctx.currentTime;
-            
-            // Bip 1
-            osc.frequency.setValueAtTime(523.25, now); // Dó
-            gainNode.gain.setValueAtTime(0.1, now);
-            
-            // Bip 2
-            osc.frequency.setValueAtTime(659.25, now + 0.2); // Mi
-            
-            // Bip 3
-            osc.frequency.setValueAtTime(783.99, now + 0.4); // Sol
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, now + 1.5);
-            
-            osc.start(now);
-            osc.stop(now + 1.5);
-        }
-
-        // Iniciar ou Pausar
         function toggleTimer() {
-            if (isRunning) {
-                pauseTimer();
-            } else {
-                startTimer();
-            }
+            if (isRunning) pauseTimer();
+            else startTimer();
         }
 
         function startTimer() {
-            // Se for a primeira vez iniciando após um reset, pega o valor do input
+            // Se foi resetado ou é a primeira vez, sincroniza com o input
             if (timeRemaining === totalDuration && !intervalId) {
-                // Atualiza o total duration baseado no input atual
                 const mins = parseInt(inputMinutes.value) || 10;
                 totalDuration = mins * 60;
                 timeRemaining = totalDuration;
@@ -217,10 +261,10 @@
 
             isRunning = true;
             btnStart.classList.remove('bg-green-600', 'hover:bg-green-500');
-            btnStart.classList.add('bg-yellow-600', 'hover:bg-yellow-500');
+            btnStart.classList.add('bg-yellow-500', 'hover:bg-yellow-400');
             btnStart.innerHTML = '<i class="fa-solid fa-pause"></i> <span>Pausar</span>';
             statusText.textContent = "Em foco...";
-            statusText.className = "text-blue-400 text-sm font-medium mb-6 animate-pulse";
+            statusText.className = "text-blue-600 dark:text-blue-400 text-sm font-medium mb-6 animate-pulse";
 
             intervalId = setInterval(() => {
                 if (timeRemaining > 0) {
@@ -235,11 +279,11 @@
         function pauseTimer() {
             isRunning = false;
             clearInterval(intervalId);
-            btnStart.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
+            btnStart.classList.remove('bg-yellow-500', 'hover:bg-yellow-400');
             btnStart.classList.add('bg-green-600', 'hover:bg-green-500');
             btnStart.innerHTML = '<i class="fa-solid fa-play"></i> <span>Continuar</span>';
             statusText.textContent = "Pausado";
-            statusText.className = "text-yellow-500 text-sm font-medium mb-6";
+            statusText.className = "text-yellow-600 dark:text-yellow-500 text-sm font-medium mb-6";
         }
 
         function resetTimer() {
@@ -250,34 +294,29 @@
             updateTimerDisplay();
             btnStart.innerHTML = '<i class="fa-solid fa-play"></i> <span>Iniciar</span>';
             statusText.textContent = "Pronto para começar";
-            statusText.className = "text-slate-400 text-sm font-medium mb-6";
+            statusText.className = "text-slate-500 dark:text-slate-400 text-sm font-medium mb-6";
             progressBar.style.width = '0%';
         }
 
-        // Quando o tempo acaba
         function finishTask() {
             playAlarm();
-            pauseTimer(); // Para o loop
+            pauseTimer();
             
-            // Contabiliza
             tasksCompleted++;
-            
-            // Adiciona ao tempo total o tempo que estava configurado
             const mins = parseInt(inputMinutes.value) || 10;
             totalSecondsFocused += (mins * 60);
 
             updateStats();
+            saveData(); // SALVA NO FINAL DA TAREFA
             
-            // Feedback visual e reset automático
             statusText.textContent = "Tarefa Concluída!";
-            statusText.className = "text-green-400 text-sm font-bold mb-6";
+            statusText.className = "text-green-600 dark:text-green-400 text-sm font-bold mb-6";
             
             setTimeout(() => {
-                resetTimer(); // Reseta para o início (zero o progresso, tempo cheio)
-            }, 2000); // Espera 2 segundos mostrando que acabou antes de resetar
+                resetTimer();
+            }, 2000);
         }
 
-        // Ajuste Manual das Tarefas (+ e -)
         function manualAdjustTask(amount) {
             const mins = parseInt(inputMinutes.value) || 10;
             
@@ -292,29 +331,45 @@
                 }
             }
             updateStats();
+            saveData(); // SALVA NO AJUSTE MANUAL
         }
 
         function updateStats() {
             taskCountDisplay.textContent = tasksCompleted;
             totalTimeDisplay.textContent = formatTotalTime(totalSecondsFocused);
-            
-            // Efeito visual no contador
-            taskCountDisplay.classList.add('text-white', 'scale-125');
-            setTimeout(() => {
-                taskCountDisplay.classList.remove('text-white', 'scale-125');
-            }, 200);
         }
 
-        // Ajuste do Input de Tempo pelos botões pequenos
         function adjustTimeInput(val) {
             let current = parseInt(inputMinutes.value) || 10;
             current += val;
             if (current < 1) current = 1;
             inputMinutes.value = current;
+            
+            saveData(); // Salva a preferência
+            
             if (!isRunning) resetTimer();
         }
 
-        // Inicializar
+        function playAlarm() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            osc.type = 'sine';
+            const now = ctx.currentTime;
+            osc.frequency.setValueAtTime(523.25, now);
+            gainNode.gain.setValueAtTime(0.1, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.2);
+            osc.frequency.setValueAtTime(783.99, now + 0.4);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, now + 1.5);
+            osc.start(now);
+            osc.stop(now + 1.5);
+        }
+
+        // Iniciar app
         init();
 
     </script>
