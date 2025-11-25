@@ -1,0 +1,6 @@
+# Permite que todos os rastreadores (como o Googlebot) acessem o site
+User-agent: *
+Allow: /
+
+# Informa a todos os rastreadores onde encontrar o mapa do site
+Sitemap: https://iniport.com.br/sitemap.xml

@@ -6,16 +6,9 @@
     
     <title>Rastreador de Foco | Timer Pomodoro e Gerenciador de Tarefas</title>
     <meta name="description" content="Aumente sua produtividade com o Rastreador de Foco. Um timer estilo Pomodoro simples, com modo escuro e contador de tarefas. Gratuito e online.">
-    <meta name="keywords" content="pomodoro, timer, foco, produtividade, tarefas, cronômetro online, dark mode">
-    <meta name="author" content="IniPort">
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
     
-    <link rel="canonical" href="https://seu-dominio.com.br/rastreador">
-
-    <meta property="og:title" content="Rastreador de Foco | Produtividade Simples">
-    <meta property="og:description" content="Gerencie seu tempo e tarefas com este timer focado em produtividade.">
-    <meta property="og:type" content="website">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱️</text></svg>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,81 +22,71 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
         }
     </script>
 
     <style>
-        /* CSS Crítico Inline */
-        body {
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .timer-display {
-            font-variant-numeric: tabular-nums;
-        }
-        .progress-bar {
-            transition: width 1s linear;
-        }
-        .btn-action:active {
-            transform: scale(0.95);
-        }
-        /* Remove setas do input number */
+        body { transition: background-color 0.3s, color 0.3s; }
+        .timer-display { font-variant-numeric: tabular-nums; }
+        .progress-bar { transition: width 1s linear; }
+        .btn-action:active { transform: scale(0.95); }
         input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; margin: 0; 
-        }
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
 
     <main class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 relative transition-colors duration-300">
         
-        <button onclick="toggleTheme()" aria-label="Alternar tema claro e escuro" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-yellow-500 dark:text-yellow-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center shadow-sm z-10">
+        <button onclick="toggleTheme()" aria-label="Alternar tema claro e escuro" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-yellow-600 dark:text-yellow-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center shadow-sm z-10">
             <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
             <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
         </button>
 
         <header class="bg-slate-50 dark:bg-slate-900 p-6 text-center border-b border-slate-200 dark:border-slate-700 transition-colors duration-300">
-            <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">Rastreador de Foco</h1>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Gerencie suas tarefas e tempo</p>
+            <h1 class="text-2xl font-bold text-blue-700 dark:text-blue-400">Rastreador de Foco</h1>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Gerencie suas tarefas e tempo</p>
         </header>
 
         <div class="p-4 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center border-b border-slate-200/50 dark:border-slate-700/50 transition-colors duration-300">
-            <label for="targetMinutes" class="text-slate-500 dark:text-slate-400 text-sm font-semibold">Meta da tarefa (min):</label>
+            <label for="targetMinutes" class="text-slate-600 dark:text-slate-400 text-sm font-semibold">Meta da tarefa (min):</label>
             <div class="flex items-center gap-2">
-                <button onclick="adjustTimeInput(-1)" aria-label="Diminuir tempo" class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold transition">-</button>
-                <input type="number" id="targetMinutes" value="10" min="1" max="120" 
-                    class="w-16 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded p-1 text-center text-slate-800 dark:text-white font-bold focus:outline-none focus:border-blue-500 transition-colors">
-                <button onclick="adjustTimeInput(1)" aria-label="Aumentar tempo" class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-bold transition">+</button>
+                <button onclick="adjustTimeInput(-1)" aria-label="Diminuir tempo" class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold transition">-</button>
+                <input type="number" id="targetMinutes" value="10" min="1" max="120" aria-label="Minutos da meta"
+                    class="w-16 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded p-1 text-center text-slate-900 dark:text-white font-bold focus:outline-none focus:border-blue-500 transition-colors">
+                <button onclick="adjustTimeInput(1)" aria-label="Aumentar tempo" class="w-8 h-8 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold transition">+</button>
             </div>
         </div>
 
         <div class="p-8 flex flex-col items-center relative">
-            <div class="w-full bg-slate-200 dark:bg-slate-700 h-4 rounded-full mb-6 overflow-hidden relative transition-colors" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            
+            <div class="w-full bg-slate-200 dark:bg-slate-700 h-4 rounded-full mb-6 overflow-hidden relative transition-colors" 
+                 role="progressbar" 
+                 aria-label="Progresso do tempo decorrido"
+                 aria-valuemin="0" 
+                 aria-valuemax="100"
+                 id="progressContainer">
                 <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-blue-500 to-purple-500 w-0"></div>
             </div>
 
-            <div class="text-7xl font-bold timer-display tracking-tight text-slate-800 dark:text-white mb-2 transition-colors" id="timerDisplay">
+            <div class="text-7xl font-bold timer-display tracking-tight text-slate-900 dark:text-white mb-2 transition-colors" id="timerDisplay">
                 00:00
             </div>
             
-            <p id="statusText" class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-6 transition-colors">
+            <p id="statusText" class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6 transition-colors">
                 Meta: <span id="targetDisplay">10:00</span>
             </p>
 
             <div class="flex gap-4 w-full justify-center">
-                <button id="btnStart" onclick="toggleTimer()" class="btn-action flex-1 bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-900/20 dark:shadow-none flex items-center justify-center gap-2 transition-colors">
+                <button id="btnStart" onclick="toggleTimer()" class="btn-action flex-1 bg-green-700 hover:bg-green-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-900/20 dark:shadow-none flex items-center justify-center gap-2 transition-colors">
                     <span id="iconContainer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </span>
                     <span id="btnStartText">Iniciar</span>
                 </button>
                 
-                <button onclick="resetTimer()" aria-label="Resetar Cronômetro" class="btn-action w-14 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center transition-colors" title="Resetar Cronômetro">
+                <button onclick="resetTimer()" aria-label="Resetar Cronômetro" class="btn-action w-14 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
             </div>
@@ -113,27 +96,27 @@
             <div class="grid grid-cols-2 gap-6">
                 
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center transition-colors shadow-sm">
-                    <span class="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tarefas Feitas</span>
+                    <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tarefas Feitas</span>
                     <div class="flex items-center gap-3 mb-2">
-                        <button onclick="manualAdjustTask(-1)" aria-label="Remover tarefa" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition p-1">
+                        <button onclick="manualAdjustTask(-1)" aria-label="Remover tarefa" class="text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </button>
-                        <span id="taskCount" class="text-4xl font-bold text-blue-600 dark:text-blue-400 transition-colors">0</span>
-                        <button onclick="manualAdjustTask(1)" aria-label="Adicionar tarefa" class="text-slate-400 hover:text-green-500 dark:hover:text-green-400 transition p-1">
+                        <span id="taskCount" class="text-4xl font-bold text-blue-700 dark:text-blue-400 transition-colors">0</span>
+                        <button onclick="manualAdjustTask(1)" aria-label="Adicionar tarefa" class="text-slate-500 hover:text-green-600 dark:hover:text-green-400 transition p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </button>
                     </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center transition-colors shadow-sm">
-                    <span class="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tempo Total</span>
-                    <span id="totalTimeDisplay" class="text-2xl font-bold text-purple-600 dark:text-purple-400 transition-colors">0m</span>
-                    <span class="text-xs text-slate-400 dark:text-slate-500 mt-1">acumulado</span>
+                    <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tempo Total</span>
+                    <span id="totalTimeDisplay" class="text-2xl font-bold text-purple-700 dark:text-purple-400 transition-colors">0m</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-500 mt-1">acumulado</span>
                 </div>
             </div>
 
             <div class="mt-6 text-center">
-                <button onclick="clearAllData()" class="text-xs text-slate-400 hover:text-red-500 underline transition">
+                <button onclick="clearAllData()" class="text-xs text-slate-500 hover:text-red-600 underline transition">
                     Limpar histórico e estatísticas
                 </button>
             </div>
@@ -141,21 +124,14 @@
     </main>
 
     <script>
-        // Ícones SVG em Strings para troca dinâmica (Performance: Zero request)
         const ICON_PLAY = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
         const ICON_PAUSE = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
 
-        // Variáveis de Estado
-        let intervalId = null;
-        let isRunning = false;
-        let timeElapsed = 0; 
-        let totalDuration = 600; 
-        let tasksCompleted = 0;
-        let totalSecondsFocused = 0;
+        let intervalId = null, isRunning = false, timeElapsed = 0, totalDuration = 600, tasksCompleted = 0, totalSecondsFocused = 0;
 
-        // Elementos DOM
         const timerDisplay = document.getElementById('timerDisplay');
         const progressBar = document.getElementById('progressBar');
+        const progressContainer = document.getElementById('progressContainer'); // Nova referência
         const btnStart = document.getElementById('btnStart');
         const iconContainer = document.getElementById('iconContainer');
         const btnStartText = document.getElementById('btnStartText');
@@ -165,15 +141,12 @@
         const totalTimeDisplay = document.getElementById('totalTimeDisplay');
         const inputMinutes = document.getElementById('targetMinutes');
         const htmlElement = document.documentElement;
-
         const defaultTitle = "Rastreador de Foco";
 
-        // Inicialização
         function init() {
             loadData();
             updateTimerDisplay();
             updateTargetDisplay();
-            
             inputMinutes.addEventListener('change', () => {
                 saveData();
                 updateTargetDisplay();
@@ -197,7 +170,6 @@
                 const data = JSON.parse(saved);
                 tasksCompleted = data.tasks || 0;
                 totalSecondsFocused = data.totalTime || 0;
-                
                 if (data.prefMinutes) inputMinutes.value = data.prefMinutes;
                 if (data.theme === 'light') htmlElement.classList.remove('dark');
                 else htmlElement.classList.add('dark');
@@ -222,7 +194,6 @@
             saveData();
         }
 
-        // Funções de Tempo
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60);
             const s = seconds % 60;
@@ -246,18 +217,16 @@
             const formatted = formatTime(timeElapsed);
             timerDisplay.textContent = formatted;
             
-            if (isRunning) {
-                document.title = `${formatted} - Foco`;
-            } else if (timeElapsed > 0) {
-                document.title = `Pausado (${formatted})`;
-            } else {
-                document.title = defaultTitle;
-            }
+            if (isRunning) document.title = `${formatted} - Foco`;
+            else if (timeElapsed > 0) document.title = `Pausado (${formatted})`;
+            else document.title = defaultTitle;
 
             let progressPercent = (timeElapsed / totalDuration) * 100;
             if (progressPercent > 100) progressPercent = 100;
+            
             progressBar.style.width = `${progressPercent}%`;
-            progressBar.setAttribute('aria-valuenow', Math.round(progressPercent));
+            // ARIA FIX: Atualiza atributo no container pai
+            progressContainer.setAttribute('aria-valuenow', Math.round(progressPercent));
         }
 
         function toggleTimer() {
@@ -270,13 +239,14 @@
             totalDuration = mins * 60;
 
             isRunning = true;
-            btnStart.classList.remove('bg-green-600', 'hover:bg-green-500');
-            btnStart.classList.add('bg-yellow-500', 'hover:bg-yellow-400');
+            btnStart.classList.remove('bg-green-700', 'hover:bg-green-600');
+            btnStart.classList.add('bg-yellow-600', 'hover:bg-yellow-500'); // Contraste melhorado
             iconContainer.innerHTML = ICON_PAUSE;
             btnStartText.textContent = "Pausar";
             
             statusText.innerHTML = `Meta: <span class="font-bold">${formatTime(totalDuration)}</span>`;
-            statusText.className = "text-blue-600 dark:text-blue-400 text-sm font-medium mb-6";
+            // Contraste melhorado
+            statusText.className = "text-blue-700 dark:text-blue-400 text-sm font-medium mb-6"; 
 
             intervalId = setInterval(() => {
                 timeElapsed++;
@@ -289,8 +259,8 @@
             isRunning = false;
             clearInterval(intervalId);
             updateTimerDisplay();
-            btnStart.classList.remove('bg-yellow-500', 'hover:bg-yellow-400');
-            btnStart.classList.add('bg-green-600', 'hover:bg-green-500');
+            btnStart.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
+            btnStart.classList.add('bg-green-700', 'hover:bg-green-600'); // Contraste melhorado
             iconContainer.innerHTML = ICON_PLAY;
             btnStartText.textContent = "Continuar";
         }
@@ -306,8 +276,9 @@
             iconContainer.innerHTML = ICON_PLAY;
             btnStartText.textContent = "Iniciar";
             statusText.innerHTML = `Meta: <span>${formatTime(totalDuration)}</span>`;
-            statusText.className = "text-slate-500 dark:text-slate-400 text-sm font-medium mb-6";
+            statusText.className = "text-slate-600 dark:text-slate-400 text-sm font-medium mb-6"; // Contraste fix
             progressBar.style.width = '0%';
+            progressContainer.setAttribute('aria-valuenow', '0');
             document.title = defaultTitle;
         }
 
@@ -321,12 +292,10 @@
             saveData();
             
             statusText.textContent = "Tarefa Concluída!";
-            statusText.className = "text-green-600 dark:text-green-400 text-sm font-bold mb-6";
+            statusText.className = "text-green-700 dark:text-green-400 text-sm font-bold mb-6"; // Contraste fix
             document.title = "Concluído! ✅";
             
-            setTimeout(() => {
-                resetTimer();
-            }, 3000);
+            setTimeout(() => { resetTimer(); }, 3000);
         }
 
         function manualAdjustTask(amount) {
@@ -396,7 +365,6 @@
             gainNode.gain.exponentialRampToValueAtTime(0.0001, secondPass + 2.0);
         }
 
-        // Inicia o app
         init();
     </script>
 </body>
