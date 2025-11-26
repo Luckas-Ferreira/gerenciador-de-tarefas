@@ -1,0 +1,25 @@
+{
+  "name": "gerenciador-de-tarefas",
+  "version": "1.0.0",
+  "description": "Esta é uma aplicação web minimalista e eficiente projetada para otimizar o fluxo de trabalho diário. Ela combina um cronômetro de foco (estilo Pomodoro) com um contador de produtividade, permitindo aos colaboradores monitorar quantas tarefas foram realizadas e o tempo total dedicado.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss -i ./css/input.css -o ./css/style.css --minify",
+    "watch": "tailwindcss -i ./css/input.css -o ./css/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luckas-Ferreira/gerenciador-de-tarefas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Luckas-Ferreira/gerenciador-de-tarefas/issues"
+  },
+  "homepage": "https://github.com/Luckas-Ferreira/gerenciador-de-tarefas#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.18"
+  }
+}
