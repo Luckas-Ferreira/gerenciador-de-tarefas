@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Informa a todos os rastreadores onde encontrar o mapa do site
-Sitemap: https://gerenciador-de-tarefas-c25.pages.dev/sitemap.xml
+Sitemap: https://contadordecliques.jluckas.com.br/sitemap.xml
