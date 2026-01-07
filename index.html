@@ -129,248 +129,280 @@
     </main>
 
     <script>
-        const ICON_PLAY = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
-        const ICON_PAUSE = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    const ICON_PLAY = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    const ICON_PAUSE = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
 
-        let intervalId = null, isRunning = false, timeElapsed = 0, totalDuration = 600, tasksCompleted = 0, totalSecondsFocused = 0;
+    // VARIÁVEIS DE CONTROLE
+    let intervalId = null;
+    let isRunning = false;
+    let timeElapsed = 0; 
+    let startTime = null; // Guardará o timestamp de início
+    let totalDuration = 600;
+    let tasksCompleted = 0;
+    let totalSecondsFocused = 0;
 
-        const timerDisplay = document.getElementById('timerDisplay');
-        const progressBar = document.getElementById('progressBar');
-        const progressContainer = document.getElementById('progressContainer'); // Nova referência
-        const btnStart = document.getElementById('btnStart');
-        const iconContainer = document.getElementById('iconContainer');
-        const btnStartText = document.getElementById('btnStartText');
-        const statusText = document.getElementById('statusText');
-        const targetDisplay = document.getElementById('targetDisplay');
-        const taskCountDisplay = document.getElementById('taskCount');
-        const totalTimeDisplay = document.getElementById('totalTimeDisplay');
-        const inputMinutes = document.getElementById('targetMinutes');
-        const htmlElement = document.documentElement;
-        const defaultTitle = "Rastreador de Foco";
+    const timerDisplay = document.getElementById('timerDisplay');
+    const progressBar = document.getElementById('progressBar');
+    const progressContainer = document.getElementById('progressContainer');
+    const btnStart = document.getElementById('btnStart');
+    const iconContainer = document.getElementById('iconContainer');
+    const btnStartText = document.getElementById('btnStartText');
+    const statusText = document.getElementById('statusText');
+    const targetDisplay = document.getElementById('targetDisplay');
+    const taskCountDisplay = document.getElementById('taskCount');
+    const totalTimeDisplay = document.getElementById('totalTimeDisplay');
+    const inputMinutes = document.getElementById('targetMinutes');
+    const htmlElement = document.documentElement;
+    const defaultTitle = "Rastreador de Foco";
 
-        function init() {
-            loadData();
-            updateTimerDisplay();
-            updateTargetDisplay();
-            inputMinutes.addEventListener('change', () => {
-                saveData();
-                updateTargetDisplay();
-                if (!isRunning) resetTimer();
-            });
-        }
-
-        function saveData() {
-            const data = {
-                tasks: tasksCompleted,
-                totalTime: totalSecondsFocused,
-                prefMinutes: inputMinutes.value,
-                theme: htmlElement.classList.contains('dark') ? 'dark' : 'light'
-            };
-            localStorage.setItem('rws_tracker_data', JSON.stringify(data));
-        }
-
-        function loadData() {
-            const saved = localStorage.getItem('rws_tracker_data');
-            if (saved) {
-                const data = JSON.parse(saved);
-                tasksCompleted = data.tasks || 0;
-                totalSecondsFocused = data.totalTime || 0;
-                if (data.prefMinutes) inputMinutes.value = data.prefMinutes;
-                if (data.theme === 'light') htmlElement.classList.remove('dark');
-                else htmlElement.classList.add('dark');
-            }
-            const mins = parseInt(inputMinutes.value) || 10;
-            totalDuration = mins * 60;
-            updateStats();
-        }
-
-        function clearAllData() {
-            if(confirm("Tem certeza? Isso vai zerar seu contador de tarefas e tempo acumulado.")) {
-                tasksCompleted = 0;
-                totalSecondsFocused = 0;
-                saveData();
-                updateStats();
-                resetTimer();
-            }
-        }
-
-        function toggleTheme() {
-            htmlElement.classList.toggle('dark');
-            saveData();
-        }
-
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
-
-        function formatTotalTime(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            if (h > 0) return `${h}h ${m}m`;
-            return `${m}m`;
-        }
-
-        function updateTargetDisplay() {
-            const mins = parseInt(inputMinutes.value) || 10;
-            totalDuration = mins * 60;
-            targetDisplay.textContent = formatTime(totalDuration);
-        }
-
-        function updateTimerDisplay() {
-            const formatted = formatTime(timeElapsed);
-            timerDisplay.textContent = formatted;
-            
-            if (isRunning) document.title = `${formatted} - Foco`;
-            else if (timeElapsed > 0) document.title = `Pausado (${formatted})`;
-            else document.title = defaultTitle;
-
-            let progressPercent = (timeElapsed / totalDuration) * 100;
-            if (progressPercent > 100) progressPercent = 100;
-            
-            progressBar.style.width = `${progressPercent}%`;
-            // ARIA FIX: Atualiza atributo no container pai
-            progressContainer.setAttribute('aria-valuenow', Math.round(progressPercent));
-        }
-
-        function toggleTimer() {
-            if (isRunning) pauseTimer();
-            else startTimer();
-        }
-
-        function startTimer() {
-            const mins = parseInt(inputMinutes.value) || 10;
-            totalDuration = mins * 60;
-
-            isRunning = true;
-            btnStart.classList.remove('bg-green-700', 'hover:bg-green-600');
-            btnStart.classList.add('bg-yellow-600', 'hover:bg-yellow-500'); // Contraste melhorado
-            iconContainer.innerHTML = ICON_PAUSE;
-            btnStartText.textContent = "Pausar";
-            
-            statusText.innerHTML = `Meta: <span class="font-bold">${formatTime(totalDuration)}</span>`;
-            // Contraste melhorado
-            statusText.className = "text-blue-700 dark:text-blue-400 text-sm font-medium mb-6"; 
-
-            intervalId = setInterval(() => {
-                timeElapsed++;
-                updateTimerDisplay();
-                if (timeElapsed >= totalDuration) finishTask();
-            }, 1000);
-        }
-
-        function pauseTimer() {
-            isRunning = false;
-            clearInterval(intervalId);
-            updateTimerDisplay();
-            btnStart.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
-            btnStart.classList.add('bg-green-700', 'hover:bg-green-600'); // Contraste melhorado
-            iconContainer.innerHTML = ICON_PLAY;
-            btnStartText.textContent = "Continuar";
-        }
-
-        function resetTimer() {
-            pauseTimer();
-            timeElapsed = 0;
-            const mins = parseInt(inputMinutes.value) || 10;
-            totalDuration = mins * 60;
-            updateTimerDisplay();
-            updateTargetDisplay();
-            
-            iconContainer.innerHTML = ICON_PLAY;
-            btnStartText.textContent = "Iniciar";
-            statusText.innerHTML = `Meta: <span>${formatTime(totalDuration)}</span>`;
-            statusText.className = "text-slate-600 dark:text-slate-400 text-sm font-medium mb-6"; // Contraste fix
-            progressBar.style.width = '0%';
-            progressContainer.setAttribute('aria-valuenow', '0');
-            document.title = defaultTitle;
-        }
-
-        function finishTask() {
-            playAlarm();
-            pauseTimer();
-            tasksCompleted++;
-            const mins = parseInt(inputMinutes.value) || 10;
-            totalSecondsFocused += (mins * 60);
-            updateStats();
-            saveData();
-            
-            statusText.textContent = "Tarefa Concluída!";
-            statusText.className = "text-green-700 dark:text-green-400 text-sm font-bold mb-6"; // Contraste fix
-            document.title = "Concluído! ✅";
-            
-            setTimeout(() => { resetTimer(); }, 3000);
-        }
-
-        function manualAdjustTask(amount) {
-            const mins = parseInt(inputMinutes.value) || 10;
-            if (amount > 0) {
-                tasksCompleted++;
-                totalSecondsFocused += (mins * 60);
-            } else {
-                if (tasksCompleted > 0) {
-                    tasksCompleted--;
-                    totalSecondsFocused -= (mins * 60);
-                    if (totalSecondsFocused < 0) totalSecondsFocused = 0;
-                }
-            }
-            updateStats();
-            saveData();
-        }
-
-        function updateStats() {
-            taskCountDisplay.textContent = tasksCompleted;
-            totalTimeDisplay.textContent = formatTotalTime(totalSecondsFocused);
-        }
-
-        function adjustTimeInput(val) {
-            let current = parseInt(inputMinutes.value) || 10;
-            current += val;
-            if (current < 1) current = 1;
-            inputMinutes.value = current;
+    function init() {
+        loadData();
+        updateTimerDisplay();
+        updateTargetDisplay();
+        inputMinutes.addEventListener('change', () => {
             saveData();
             updateTargetDisplay();
             if (!isRunning) resetTimer();
+        });
+
+        // Garantia extra: quando a aba voltar a ter foco, força a atualização
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && isRunning) {
+                updateTimerFromTimestamp();
+            }
+        });
+    }
+
+    function startTimer() {
+        const mins = parseInt(inputMinutes.value) || 10;
+        totalDuration = mins * 60;
+
+        isRunning = true;
+        
+        // LÓGICA CRÍTICA: Define o início baseado no tempo que já passou
+        // Date.now() dá o tempo em milisegundos.
+        startTime = Date.now() - (timeElapsed * 1000);
+
+        btnStart.classList.remove('bg-green-700', 'hover:bg-green-600');
+        btnStart.classList.add('bg-yellow-600', 'hover:bg-yellow-500');
+        iconContainer.innerHTML = ICON_PAUSE;
+        btnStartText.textContent = "Pausar";
+        
+        statusText.innerHTML = `Meta: <span class="font-bold">${formatTime(totalDuration)}</span>`;
+        statusText.className = "text-blue-700 dark:text-blue-400 text-sm font-medium mb-6"; 
+
+        intervalId = setInterval(() => {
+            updateTimerFromTimestamp();
+        }, 100); // Roda mais rápido para suavidade, mas o cálculo é via relógio global
+    }
+
+    function updateTimerFromTimestamp() {
+        if (!isRunning) return;
+
+        // Calcula quantos segundos se passaram desde o startTime até AGORA
+        const currentTime = Date.now();
+        timeElapsed = Math.floor((currentTime - startTime) / 1000);
+        
+        updateTimerDisplay();
+
+        if (timeElapsed >= totalDuration) {
+            finishTask();
         }
+    }
 
-        function playAlarm() {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return;
-            const ctx = new AudioContext();
-            const now = ctx.currentTime;
-            const gainNode = ctx.createGain();
-            gainNode.connect(ctx.destination);
-            gainNode.gain.setValueAtTime(0.3, now);
+    function pauseTimer() {
+        isRunning = false;
+        clearInterval(intervalId);
+        updateTimerDisplay();
+        btnStart.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
+        btnStart.classList.add('bg-green-700', 'hover:bg-green-600');
+        iconContainer.innerHTML = ICON_PLAY;
+        btnStartText.textContent = "Continuar";
+    }
 
-            const playNote = (freq, time, duration) => {
-                const osc = ctx.createOscillator();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, time);
-                osc.connect(gainNode);
-                osc.start(time);
-                osc.stop(time + duration);
-            };
+    function resetTimer() {
+        pauseTimer();
+        timeElapsed = 0;
+        startTime = null; 
+        const mins = parseInt(inputMinutes.value) || 10;
+        totalDuration = mins * 60;
+        updateTimerDisplay();
+        updateTargetDisplay();
+        
+        iconContainer.innerHTML = ICON_PLAY;
+        btnStartText.textContent = "Iniciar";
+        statusText.innerHTML = `Meta: <span>${formatTime(totalDuration)}</span>`;
+        statusText.className = "text-slate-600 dark:text-slate-400 text-sm font-medium mb-6";
+        progressBar.style.width = '0%';
+        progressContainer.setAttribute('aria-valuenow', '0');
+        document.title = defaultTitle;
+    }
 
-            const notes = [523.25, 659.25, 783.99, 1046.50];
-            const spacing = 0.15;
+    // --- FUNÇÕES DE UTILITÁRIO MANTIDAS ---
 
-            playNote(notes[0], now, spacing);
-            playNote(notes[1], now + spacing, spacing);
-            playNote(notes[2], now + spacing * 2, spacing);
-            playNote(notes[3], now + spacing * 3, spacing * 3);
+    function saveData() {
+        const data = {
+            tasks: tasksCompleted,
+            totalTime: totalSecondsFocused,
+            prefMinutes: inputMinutes.value,
+            theme: htmlElement.classList.contains('dark') ? 'dark' : 'light'
+        };
+        localStorage.setItem('rws_tracker_data', JSON.stringify(data));
+    }
 
-            const secondPass = now + 0.8;
-            playNote(notes[0], secondPass, spacing);
-            playNote(notes[1], secondPass + spacing, spacing);
-            playNote(notes[2], secondPass + spacing * 2, spacing);
-            playNote(notes[3], secondPass + spacing * 3, 1.5);
-
-            gainNode.gain.setValueAtTime(0.3, secondPass + 0.5);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, secondPass + 2.0);
+    function loadData() {
+        const saved = localStorage.getItem('rws_tracker_data');
+        if (saved) {
+            const data = JSON.parse(saved);
+            tasksCompleted = data.tasks || 0;
+            totalSecondsFocused = data.totalTime || 0;
+            if (data.prefMinutes) inputMinutes.value = data.prefMinutes;
+            if (data.theme === 'light') htmlElement.classList.remove('dark');
+            else htmlElement.classList.add('dark');
         }
+        const mins = parseInt(inputMinutes.value) || 10;
+        totalDuration = mins * 60;
+        updateStats();
+    }
 
-        init();
-    </script>
+    function clearAllData() {
+        if(confirm("Tem certeza? Isso vai zerar seu contador de tarefas e tempo acumulado.")) {
+            tasksCompleted = 0;
+            totalSecondsFocused = 0;
+            saveData();
+            updateStats();
+            resetTimer();
+        }
+    }
+
+    function toggleTheme() {
+        htmlElement.classList.toggle('dark');
+        saveData();
+    }
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function formatTotalTime(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        if (h > 0) return `${h}h ${m}m`;
+        return `${m}m`;
+    }
+
+    function updateTargetDisplay() {
+        const mins = parseInt(inputMinutes.value) || 10;
+        totalDuration = mins * 60;
+        targetDisplay.textContent = formatTime(totalDuration);
+    }
+
+    function updateTimerDisplay() {
+        const formatted = formatTime(timeElapsed);
+        timerDisplay.textContent = formatted;
+        
+        if (isRunning) document.title = `${formatted} - Foco`;
+        else if (timeElapsed > 0) document.title = `Pausado (${formatted})`;
+        else document.title = defaultTitle;
+
+        let progressPercent = (timeElapsed / totalDuration) * 100;
+        if (progressPercent > 100) progressPercent = 100;
+        
+        progressBar.style.width = `${progressPercent}%`;
+        progressContainer.setAttribute('aria-valuenow', Math.round(progressPercent));
+    }
+
+    function toggleTimer() {
+        if (isRunning) pauseTimer();
+        else startTimer();
+    }
+
+    function finishTask() {
+        playAlarm();
+        pauseTimer();
+        tasksCompleted++;
+        const mins = parseInt(inputMinutes.value) || 10;
+        totalSecondsFocused += (mins * 60);
+        updateStats();
+        saveData();
+        
+        statusText.textContent = "Tarefa Concluída!";
+        statusText.className = "text-green-700 dark:text-green-400 text-sm font-bold mb-6";
+        document.title = "Concluído! ✅";
+        
+        setTimeout(() => { resetTimer(); }, 3000);
+    }
+
+    function manualAdjustTask(amount) {
+        const mins = parseInt(inputMinutes.value) || 10;
+        if (amount > 0) {
+            tasksCompleted++;
+            totalSecondsFocused += (mins * 60);
+        } else {
+            if (tasksCompleted > 0) {
+                tasksCompleted--;
+                totalSecondsFocused -= (mins * 60);
+                if (totalSecondsFocused < 0) totalSecondsFocused = 0;
+            }
+        }
+        updateStats();
+        saveData();
+    }
+
+    function updateStats() {
+        taskCountDisplay.textContent = tasksCompleted;
+        totalTimeDisplay.textContent = formatTotalTime(totalSecondsFocused);
+    }
+
+    function adjustTimeInput(val) {
+        let current = parseInt(inputMinutes.value) || 10;
+        current += val;
+        if (current < 1) current = 1;
+        inputMinutes.value = current;
+        saveData();
+        updateTargetDisplay();
+        if (!isRunning) resetTimer();
+    }
+
+    function playAlarm() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const now = ctx.currentTime;
+        const gainNode = ctx.createGain();
+        gainNode.connect(ctx.destination);
+        gainNode.gain.setValueAtTime(0.3, now);
+
+        const playNote = (freq, time, duration) => {
+            const osc = ctx.createOscillator();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, time);
+            osc.connect(gainNode);
+            osc.start(time);
+            osc.stop(time + duration);
+        };
+
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        const spacing = 0.15;
+
+        playNote(notes[0], now, spacing);
+        playNote(notes[1], now + spacing, spacing);
+        playNote(notes[2], now + spacing * 2, spacing);
+        playNote(notes[3], now + spacing * 3, spacing * 3);
+
+        const secondPass = now + 0.8;
+        playNote(notes[0], secondPass, spacing);
+        playNote(notes[1], secondPass + spacing, spacing);
+        playNote(notes[2], secondPass + spacing * 2, spacing);
+        playNote(notes[3], secondPass + spacing * 3, 1.5);
+
+        gainNode.gain.setValueAtTime(0.3, secondPass + 0.5);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, secondPass + 2.0);
+    }
+
+    init();
+</script>
 </body>
 </html>
