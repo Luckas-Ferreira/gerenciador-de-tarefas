@@ -26,6 +26,7 @@
             theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         @tailwind base;
@@ -120,19 +121,19 @@
                 </div>
             </div>
 
+            <div class="mt-6 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
+                <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-4 block text-center">Histórico (Últimos 7 dias)</span>
+                <div class="relative h-48 w-full">
+                    <canvas id="productivityChart"></canvas>
+                </div>
+            </div>
+
             <div class="mt-6 text-center">
                 <button onclick="clearAllData()" class="text-xs text-slate-500 hover:text-red-600 underline transition">
-                    Limpar histórico e estatísticas
+                    Limpar histórico completo
                 </button>
             </div>
         </div>
-    </main>
-
-    <a href="https://jluckas.com.br" class="mt-8 text-sm font-medium text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors flex items-center gap-1 group">
-        <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        Voltar ao portfólio
-    </a>
-
     <script>
     const ICON_PLAY = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
     const ICON_PAUSE = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
@@ -143,8 +144,8 @@
     let timeElapsed = 0; 
     let startTime = null; // Guardará o timestamp de início
     let totalDuration = 600;
-    let tasksCompleted = 0;
-    let totalSecondsFocused = 0;
+    let historyData = {}; // Format: { "YYYY-MM-DD": { tasks: 0, totalTime: 0 } }
+    let chartInstance = null;
 
     const timerDisplay = document.getElementById('timerDisplay');
     const progressBar = document.getElementById('progressBar');
@@ -176,6 +177,22 @@
                 updateTimerFromTimestamp();
             }
         });
+    }
+
+    function getTodayString() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    function getTodayData() {
+        const today = getTodayString();
+        if (!historyData[today]) {
+            historyData[today] = { tasks: 0, totalTime: 0 };
+        }
+        return historyData[today];
     }
 
     function startTimer() {
@@ -247,20 +264,32 @@
 
     function saveData() {
         const data = {
-            tasks: tasksCompleted,
-            totalTime: totalSecondsFocused,
+            history: historyData,
             prefMinutes: inputMinutes.value,
             theme: htmlElement.classList.contains('dark') ? 'dark' : 'light'
         };
         localStorage.setItem('rws_tracker_data', JSON.stringify(data));
+        updateChart();
     }
 
     function loadData() {
         const saved = localStorage.getItem('rws_tracker_data');
         if (saved) {
             const data = JSON.parse(saved);
-            tasksCompleted = data.tasks || 0;
-            totalSecondsFocused = data.totalTime || 0;
+            
+            // Migração do formato antigo para o novo formato de histórico
+            if (data.tasks !== undefined || data.totalTime !== undefined) {
+                const today = getTodayString();
+                historyData[today] = {
+                    tasks: data.tasks || 0,
+                    totalTime: data.totalTime || 0
+                };
+            }
+            
+            if (data.history) {
+                historyData = data.history;
+            }
+
             if (data.prefMinutes) inputMinutes.value = data.prefMinutes;
             if (data.theme === 'light') htmlElement.classList.remove('dark');
             else htmlElement.classList.add('dark');
@@ -268,12 +297,12 @@
         const mins = parseInt(inputMinutes.value) || 10;
         totalDuration = mins * 60;
         updateStats();
+        initChart();
     }
 
     function clearAllData() {
-        if(confirm("Tem certeza? Isso vai zerar seu contador de tarefas e tempo acumulado.")) {
-            tasksCompleted = 0;
-            totalSecondsFocused = 0;
+        if(confirm("Tem certeza? Isso vai zerar TODO o seu histórico de tarefas e tempo acumulado.")) {
+            historyData = {};
             saveData();
             updateStats();
             resetTimer();
@@ -327,9 +356,12 @@
     function finishTask() {
         playAlarm();
         pauseTimer();
-        tasksCompleted++;
+        
+        const todayData = getTodayData();
+        todayData.tasks++;
         const mins = parseInt(inputMinutes.value) || 10;
-        totalSecondsFocused += (mins * 60);
+        todayData.totalTime += (mins * 60);
+        
         updateStats();
         saveData();
         
@@ -341,15 +373,16 @@
     }
 
     function manualAdjustTask(amount) {
+        const todayData = getTodayData();
         const mins = parseInt(inputMinutes.value) || 10;
         if (amount > 0) {
-            tasksCompleted++;
-            totalSecondsFocused += (mins * 60);
+            todayData.tasks++;
+            todayData.totalTime += (mins * 60);
         } else {
-            if (tasksCompleted > 0) {
-                tasksCompleted--;
-                totalSecondsFocused -= (mins * 60);
-                if (totalSecondsFocused < 0) totalSecondsFocused = 0;
+            if (todayData.tasks > 0) {
+                todayData.tasks--;
+                todayData.totalTime -= (mins * 60);
+                if (todayData.totalTime < 0) todayData.totalTime = 0;
             }
         }
         updateStats();
@@ -357,8 +390,9 @@
     }
 
     function updateStats() {
-        taskCountDisplay.textContent = tasksCompleted;
-        totalTimeDisplay.textContent = formatTotalTime(totalSecondsFocused);
+        const todayData = getTodayData();
+        taskCountDisplay.textContent = todayData.tasks;
+        totalTimeDisplay.textContent = formatTotalTime(todayData.totalTime);
     }
 
     function adjustTimeInput(val) {
@@ -407,7 +441,107 @@
         gainNode.gain.exponentialRampToValueAtTime(0.0001, secondPass + 2.0);
     }
 
+    // --- CHART JS LOGIC ---
+    function initChart() {
+        const canvas = document.getElementById('productivityChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        const isDark = htmlElement.classList.contains('dark');
+        const textColor = isDark ? '#94a3b8' : '#64748b'; // slate-400 : slate-500
+        const gridColor = isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(226, 232, 240, 0.8)'; // slate-700/50 : slate-200/80
+
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: getChartData(),
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return formatTotalTime(context.raw * 60) + " focados";
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: textColor },
+                        grid: { color: gridColor },
+                        title: { display: true, text: 'Minutos', color: textColor, font: { size: 10 } }
+                    },
+                    x: {
+                        ticks: { color: textColor },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Observer para atualizar cores do gráfico quando trocar tema claro/escuro
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class' && chartInstance) {
+                    const isDarkTheme = htmlElement.classList.contains('dark');
+                    const newTextColor = isDarkTheme ? '#94a3b8' : '#64748b';
+                    const newGridColor = isDarkTheme ? 'rgba(51, 65, 85, 0.5)' : 'rgba(226, 232, 240, 0.8)';
+                    chartInstance.options.scales.x.ticks.color = newTextColor;
+                    chartInstance.options.scales.y.ticks.color = newTextColor;
+                    chartInstance.options.scales.y.grid.color = newGridColor;
+                    chartInstance.options.scales.y.title.color = newTextColor;
+                    chartInstance.update();
+                }
+            });
+        });
+        observer.observe(htmlElement, { attributes: true });
+    }
+
+    function updateChart() {
+        if (chartInstance) {
+            chartInstance.data = getChartData();
+            chartInstance.update();
+        }
+    }
+
+    function getChartData() {
+        const labels = [];
+        const data = [];
+        
+        // Loop last 7 days
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            
+            labels.push(`${day}/${month}`);
+            
+            if (historyData[dateStr]) {
+                data.push(Math.round(historyData[dateStr].totalTime / 60)); // minutos
+            } else {
+                data.push(0);
+            }
+        }
+        
+        return {
+            labels: labels,
+            datasets: [{
+                label: 'Minutos Focados',
+                data: data,
+                backgroundColor: 'rgba(59, 130, 246, 0.8)', // blue-500
+                hoverBackgroundColor: 'rgba(37, 99, 235, 1)', // blue-600
+                borderRadius: 4
+            }]
+        };
+    }
+
     init();
-</script>
+    </script>
 </body>
 </html>
