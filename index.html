@@ -38,16 +38,20 @@
             opacity: 0;
             transition: max-height 0.4s ease, opacity 0.3s ease;
         }
+
         .panorama-body.open {
             max-height: 500px;
             opacity: 1;
         }
+
         .panorama-chevron {
             transition: transform 0.3s;
         }
+
         .panorama-open .panorama-chevron {
             transform: rotate(180deg);
         }
+
         .panorama-stat {
             flex: 1;
             background: rgba(148, 163, 184, 0.05);
@@ -55,6 +59,7 @@
             padding: 8px;
             text-align: center;
         }
+
         .panorama-stat-label {
             font-size: 0.65rem;
             text-transform: uppercase;
@@ -62,18 +67,22 @@
             color: #64748b;
             margin-bottom: 2px;
         }
+
         .panorama-stat-value {
             font-size: 1.1rem;
             font-weight: 800;
         }
-        .dark .panorama-stat-label { color: #94a3b8; }
+
+        .dark .panorama-stat-label {
+            color: #94a3b8;
+        }
     </style>
 </head>
 
 <body
     class="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
 
-    <!-- Toast -->
+    <!-- Toast oo -->
     <div id="toast" role="status" aria-live="polite">—</div>
 
     <!-- ══ LOGIN MODAL ══════════════════════════════════════════ -->
@@ -397,12 +406,17 @@
                                 <p style="font-size:0.75rem;color:#bfdbfe;"><span id="totalHoursDisplay">0m</span>
                                     trabalhadas hoje</p>
                                 <!-- BRL Converter (shown when USD or EUR is selected) -->
-                                <div id="converterWrapper" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15);">
+                                <div id="converterWrapper"
+                                    style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15);">
                                     <div style="display:flex;align-items:center;justify-content:space-between;">
-                                        <span style="font-size:0.6875rem;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:0.05em;">em Reais</span>
-                                        <span id="converterTime" style="font-size:0.625rem;color:rgba(147,197,253,0.7);"></span>
+                                        <span
+                                            style="font-size:0.6875rem;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:0.05em;">em
+                                            Reais</span>
+                                        <span id="converterTime"
+                                            style="font-size:0.625rem;color:rgba(147,197,253,0.7);"></span>
                                     </div>
-                                    <p id="converterBRL" style="font-size:1.1rem;font-weight:700;color:#fff;margin-top:2px;"></p>
+                                    <p id="converterBRL"
+                                        style="font-size:1.1rem;font-weight:700;color:#fff;margin-top:2px;"></p>
                                 </div>
                             </div>
                         </div>
@@ -487,7 +501,8 @@
                                     <div id="panoEarnings" class="panorama-stat-value" style="color:#10b981;">—</div>
                                     <!-- BRL converter for panorama -->
                                     <div id="panoConverterWrapper" style="display:none;margin-top:3px;">
-                                        <div id="panoConverterBRL" style="font-size:0.65rem;font-weight:600;color:#6b7280;"></div>
+                                        <div id="panoConverterBRL"
+                                            style="font-size:0.65rem;font-weight:600;color:#6b7280;"></div>
                                     </div>
                                 </div>
                                 <div class="panorama-stat">
@@ -519,7 +534,7 @@
 
     </main>
 
-    
+
     <script src="js/firebase-setup.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/db.js"></script>
