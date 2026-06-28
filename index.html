@@ -360,6 +360,14 @@
                             <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2);">
                                 <p style="font-size:0.75rem;color:#bfdbfe;"><span id="totalHoursDisplay">0m</span>
                                     trabalhadas hoje</p>
+                                <!-- BRL Converter (shown when USD or EUR is selected) -->
+                                <div id="converterWrapper" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.15);">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                                        <span style="font-size:0.6875rem;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:0.05em;">em Reais</span>
+                                        <span id="converterTime" style="font-size:0.625rem;color:rgba(147,197,253,0.7);"></span>
+                                    </div>
+                                    <p id="converterBRL" style="font-size:1.1rem;font-weight:700;color:#fff;margin-top:2px;"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -441,6 +449,10 @@
                                 <div class="panorama-stat">
                                     <div class="panorama-stat-label">Ganhos</div>
                                     <div id="panoEarnings" class="panorama-stat-value" style="color:#10b981;">—</div>
+                                    <!-- BRL converter for panorama -->
+                                    <div id="panoConverterWrapper" style="display:none;margin-top:3px;">
+                                        <div id="panoConverterBRL" style="font-size:0.65rem;font-weight:600;color:#6b7280;"></div>
+                                    </div>
                                 </div>
                                 <div class="panorama-stat">
                                     <div class="panorama-stat-label">Melhor dia</div>

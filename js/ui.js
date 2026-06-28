@@ -102,10 +102,68 @@
             EUR: { locale: 'de-DE', code: 'EUR', symbol: '€' }
         };
 
+        // ─── Exchange Rates Cache ────────────────────────────────────────
+        let exchangeRates = {}; // e.g. { USD: 5.42, EUR: 5.98 } — rates to BRL
+        let exchangeRatesUpdatedAt = null;
+
+        async function fetchExchangeRates() {
+            try {
+                // Free, no-key API: rates relative to BRL
+                const res = await fetch('https://api.frankfurter.app/latest?base=BRL&symbols=USD,EUR');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const json = await res.json();
+                // json.rates = { USD: 0.1845, EUR: 0.1673 } (how many USD/EUR per 1 BRL)
+                // We want how many BRL per 1 USD/EUR → invert
+                exchangeRates.USD = json.rates.USD ? (1 / json.rates.USD) : null;
+                exchangeRates.EUR = json.rates.EUR ? (1 / json.rates.EUR) : null;
+                exchangeRatesUpdatedAt = new Date();
+            } catch (e) {
+                console.warn('Cotação indisponível:', e.message);
+            }
+        }
+
+        function formatBRL(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency', currency: 'BRL',
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        function updateConverterUI(amountInSelectedCurrency) {
+            const el = document.getElementById('converterBRL');
+            const wrapper = document.getElementById('converterWrapper');
+            if (!el || !wrapper) return;
+
+            // Only show converter when currency is NOT BRL and we have a rate
+            if (selectedCurrency === 'BRL' || !amountInSelectedCurrency || amountInSelectedCurrency <= 0) {
+                wrapper.style.display = 'none';
+                return;
+            }
+
+            const rate = exchangeRates[selectedCurrency];
+            if (!rate) {
+                wrapper.style.display = 'none';
+                return;
+            }
+
+            const brlValue = amountInSelectedCurrency * rate;
+            const timeLabel = exchangeRatesUpdatedAt
+                ? exchangeRatesUpdatedAt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                : '';
+
+            el.textContent = '≈ ' + formatBRL(brlValue);
+            const timeEl = document.getElementById('converterTime');
+            if (timeEl && timeLabel) timeEl.textContent = 'cotação às ' + timeLabel;
+            wrapper.style.display = 'block';
+        }
+
         function selectCurrency(code) {
             selectedCurrency = code;
             applyCurrencyUI(code);
             updateEarningsDisplay();
+            // Re-render panorama so earnings show in the new currency
+            const panoramaBody = document.getElementById('panoramaBody');
+            if (panoramaBody && panoramaBody.classList.contains('open')) renderPanorama();
             if (currentUser && FIREBASE_READY) saveCloudData();
         }
 
@@ -148,6 +206,9 @@
             document.getElementById('earningsTodayDisplay').textContent = formatCurrency(todayEarned);
             document.getElementById('earningsWeekDisplay').textContent = formatCurrency(weekEarned);
             document.getElementById('totalHoursDisplay').textContent = formatTotalTime(todaySecs);
+
+            // Update BRL converter on the earnings card (today's value)
+            updateConverterUI(todayEarned);
         }
 
         function formatCurrency(v) {
@@ -309,8 +370,24 @@
             const mm = Math.floor((totalSecs % 3600) / 60);
             document.getElementById('panoHours').textContent = hh ? `${hh}h ${mm}m` : `${mm}m`;
             document.getElementById('panoTasks').textContent = totalTasks;
+
+            const monthEarned = hourlyRate > 0 ? (totalSecs / 3600) * hourlyRate : 0;
             document.getElementById('panoEarnings').textContent =
-                hourlyRate > 0 ? formatCurrency((totalSecs / 3600) * hourlyRate) : '—';
+                hourlyRate > 0 ? formatCurrency(monthEarned) : '—';
+
+            // Show BRL conversion below panoEarnings if currency is not BRL
+            const panoConverterEl = document.getElementById('panoConverterBRL');
+            const panoConverterWrapper = document.getElementById('panoConverterWrapper');
+            if (panoConverterWrapper && panoConverterEl) {
+                if (selectedCurrency !== 'BRL' && monthEarned > 0 && exchangeRates[selectedCurrency]) {
+                    const brlVal = monthEarned * exchangeRates[selectedCurrency];
+                    panoConverterEl.textContent = '≈ ' + formatBRL(brlVal);
+                    panoConverterWrapper.style.display = 'block';
+                } else {
+                    panoConverterWrapper.style.display = 'none';
+                }
+            }
+
             document.getElementById('panoBestDay').textContent =
                 bestDayNum ? `Dia ${bestDayNum}` : '—';
 
@@ -372,4 +449,7 @@
         }
 
         // ── Start ─────────────────────────────────────────────────────
+        // Fetch exchange rates on load and refresh every 30 minutes
+        fetchExchangeRates();
+        setInterval(fetchExchangeRates, 30 * 60 * 1000);
         init();
