@@ -1,3 +1,518 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+        /* ── Base transitions ─────────────────────── */
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .timer-display {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress-bar {
+            transition: width 1s linear;
+        }
+
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* ── Modal ───────────────────────────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(2, 6, 23, 0.72);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            width: 100%;
+            max-width: 380px;
+            margin: 1rem;
+            transform: scale(0.94) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            opacity: 0;
+            box-shadow: 0 32px 72px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark .modal-card {
+            background: #1e293b;
+        }
+
+        .modal-overlay.open .modal-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* ── Auth tabs ───────────────────────────── */
+        .auth-tab {
+            flex: 1;
+            padding: 0.45rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+            color: #64748b;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .auth-tab.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .dark .auth-tab:not(.active) {
+            color: #94a3b8;
+        }
+
+        /* ── Modal dark mode extras ──────────────── */
+        .modal-tab-bar {
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            transition: background 0.2s;
+        }
+
+        .dark .modal-tab-bar {
+            background: #0f172a;
+        }
+
+        .modal-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .dark .modal-label {
+            color: #64748b;
+        }
+
+        .modal-divider-line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .dark .modal-divider-line {
+            background: #334155;
+        }
+
+        .modal-google-btn {
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+            cursor: pointer;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1e293b;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .modal-google-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .dark .modal-google-btn {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        .dark .modal-google-btn:hover {
+            background: #1e3a5f20;
+            border-color: #475569;
+        }
+
+        .modal-close-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .dark .modal-close-btn:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .modal-skip-btn {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-skip-btn:hover {
+            color: #64748b;
+        }
+
+        .dark .modal-skip-btn:hover {
+            color: #cbd5e1;
+        }
+
+        /* ── Currency toggle ─────────────────────── */
+        .currency-selector {
+            display: flex;
+            gap: 4px;
+            padding: 3px;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .dark .currency-selector {
+            background: #0f172a;
+        }
+
+        .currency-btn {
+            padding: 4px 10px;
+            border-radius: 7px;
+            border: none;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: #64748b;
+            transition: background 0.18s, color 0.18s;
+        }
+
+        .currency-btn.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .dark .currency-btn:not(.active) {
+            color: #94a3b8;
+        }
+
+        .dark .currency-btn.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        /* ── Input styled ────────────────────────── */
+        .input-styled {
+            width: 100%;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 0.625rem;
+            padding: 0.6rem 0.875rem;
+            font-size: 0.9375rem;
+            color: #0f172a;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .dark .input-styled {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        .input-styled:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* ── Toast ───────────────────────────────── */
+        #toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            z-index: 200;
+            padding: 0.6rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            white-space: nowrap;
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #toast.success {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        #toast.error {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        #toast.info {
+            background: #1e3a5f;
+            color: #bfdbfe;
+        }
+
+        /* ── Spinner ─────────────────────────────── */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── User avatar ─────────────────────────── */
+        .user-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        /* ── Earnings slide-in ───────────────────── */
+        #earningsSection {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        #earningsSection.show {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        /* ── Earnings gradient card ──────────────── */
+        .earnings-card {
+            background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+            border-radius: 0.875rem;
+            padding: 1rem 1.125rem;
+            color: #fff;
+        }
+
+        /* ── Auth btn ────────────────────────────── */
+        .auth-login-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2563eb;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 9999px;
+            padding: 5px 12px;
+            transition: background 0.2s, color 0.2s;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .auth-login-btn:hover {
+            background: #eff6ff;
+        }
+
+        .dark .auth-login-btn {
+            color: #60a5fa;
+            border-color: #1e3a5f;
+        }
+
+        .dark .auth-login-btn:hover {
+            background: #1e3a5f30;
+        }
+
+        /* ── Cloud synced badge ──────────────────── */
+        .cloud-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: #16a34a;
+            background: #dcfce7;
+            border-radius: 9999px;
+            padding: 2px 8px;
+        }
+
+        .dark .cloud-badge {
+            color: #4ade80;
+            background: #14532d40;
+        }
+
+        *,
+        :after,
+        :before {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgba(59, 130, 246, .5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        ::backdrop {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgba(59, 130, 246, .5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        
