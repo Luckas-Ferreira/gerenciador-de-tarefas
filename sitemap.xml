@@ -2,7 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://contadordecliques.jluckas.com.br/index.html</loc>
+    <loc>https://contadordecliques.jluckas.com.br/</loc>
     <priority>1.00</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-27</lastmod>
   </url>
 </urlset>

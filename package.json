@@ -4,8 +4,8 @@
   "description": "Esta é uma aplicação web minimalista e eficiente projetada para otimizar o fluxo de trabalho diário. Ela combina um cronômetro de foco (estilo Pomodoro) com um contador de produtividade, permitindo aos colaboradores monitorar quantas tarefas foram realizadas e o tempo total dedicado.",
   "main": "index.js",
   "scripts": {
-    "build": "tailwindcss -i  -o ./css/style.css --minify",
-    "watch": "tailwindcss -i  -o ./css/style.css --watch"
+    "build": "tailwindcss -i ./src/input.css -o ./css/style.css --minify",
+    "watch": "tailwindcss -i ./src/input.css -o ./css/style.css --watch"
   },
   "repository": {
     "type": "git",

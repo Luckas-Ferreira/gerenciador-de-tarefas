@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Rastreador de Foco | Timer Pomodoro e Gerenciador de Tarefas</title>
-    <meta name="description" content="Aumente sua produtividade com o Rastreador de Foco. Um timer estilo Pomodoro simples, com modo escuro e contador de tarefas. Gratuito e online.">
+    <title>Gerenciador de Tarefas | Timer de Foco e Controle de Horas</title>
+    <meta name="description" content="Gerencie suas tarefas, controle suas horas trabalhadas e calcule seus ganhos. Timer estilo Pomodoro com histórico semanal, modo escuro e conta na nuvem. Gratuito e online.">
     
     <meta name="robots" content="index, follow">
     
@@ -28,31 +28,344 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Firebase SDK (Compat v10) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
     <style>
         @tailwind base;
         @tailwind components;
         @tailwind utilities;
 *,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.18 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:Inter,sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width:640px){.container{max-width:640px}}@media (min-width:768px){.container{max-width:768px}}@media (min-width:1024px){.container{max-width:1024px}}@media (min-width:1280px){.container{max-width:1280px}}@media (min-width:1536px){.container{max-width:1536px}}.absolute{position:absolute}.relative{position:relative}.right-4{right:1rem}.top-4{top:1rem}.z-10{z-index:10}.mb-2{margin-bottom:.5rem}.mb-6{margin-bottom:1.5rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-6{margin-top:1.5rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-4{height:1rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-8{height:2rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-0{width:0}.w-14{width:3.5rem}.w-16{width:4rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-8{width:2rem}.w-full{width:100%}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.overflow-hidden{overflow:hidden}.scroll-smooth{scroll-behavior:smooth}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:.75rem}.rounded-t-3xl{border-top-left-radius:1.5rem;border-top-right-radius:1.5rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1))}.border-slate-200\/50{border-color:rgba(226,232,240,.5)}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1))}.bg-green-700{--tw-bg-opacity:1;background-color:rgb(21 128 61/var(--tw-bg-opacity,1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240/var(--tw-bg-opacity,1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-slate-50\/50{background-color:rgba(248,250,252,.5)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.bg-yellow-600{--tw-bg-opacity:1;background-color:rgb(202 138 4/var(--tw-bg-opacity,1))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-blue-500{--tw-gradient-from:#3b82f6 var(--tw-gradient-from-position);--tw-gradient-to:rgba(59,130,246,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.to-purple-500{--tw-gradient-to:#a855f7 var(--tw-gradient-to-position)}.p-1{padding:.25rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-7xl{font-size:4.5rem;line-height:1}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tracking-tight{letter-spacing:-.025em}.tracking-wider{letter-spacing:.05em}.text-blue-700{--tw-text-opacity:1;color:rgb(29 78 216/var(--tw-text-opacity,1))}.text-green-700{--tw-text-opacity:1;color:rgb(21 128 61/var(--tw-text-opacity,1))}.text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity,1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.text-yellow-600{--tw-text-opacity:1;color:rgb(202 138 4/var(--tw-text-opacity,1))}.underline{text-decoration-line:underline}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color)}.shadow-2xl,.shadow-lg{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-green-900\/20{--tw-shadow-color:rgba(20,83,45,.2);--tw-shadow:var(--tw-shadow-colored)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-300{transition-duration:.3s}.hover\:bg-green-600:hover{--tw-bg-opacity:1;background-color:rgb(22 163 74/var(--tw-bg-opacity,1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240/var(--tw-bg-opacity,1))}.hover\:bg-slate-300:hover{--tw-bg-opacity:1;background-color:rgb(203 213 225/var(--tw-bg-opacity,1))}.hover\:bg-yellow-500:hover{--tw-bg-opacity:1;background-color:rgb(234 179 8/var(--tw-bg-opacity,1))}.hover\:text-green-600:hover{--tw-text-opacity:1;color:rgb(22 163 74/var(--tw-text-opacity,1))}.hover\:text-red-600:hover{--tw-text-opacity:1;color:rgb(220 38 38/var(--tw-text-opacity,1))}.focus\:border-blue-500:focus{--tw-border-opacity:1;border-color:rgb(59 130 246/var(--tw-border-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.dark\:block:is(.dark *){display:block}.dark\:hidden:is(.dark *){display:none}.dark\:border-slate-600:is(.dark *){--tw-border-opacity:1;border-color:rgb(71 85 105/var(--tw-border-opacity,1))}.dark\:border-slate-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.dark\:border-slate-700\/50:is(.dark *){border-color:rgba(51,65,85,.5)}.dark\:bg-slate-700:is(.dark *){--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.dark\:bg-slate-800:is(.dark *){--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.dark\:bg-slate-800\/50:is(.dark *){background-color:rgba(30,41,59,.5)}.dark\:bg-slate-900:is(.dark *){--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.dark\:bg-slate-950:is(.dark *){--tw-bg-opacity:1;background-color:rgb(2 6 23/var(--tw-bg-opacity,1))}.dark\:text-blue-400:is(.dark *){--tw-text-opacity:1;color:rgb(96 165 250/var(--tw-text-opacity,1))}.dark\:text-green-400:is(.dark *){--tw-text-opacity:1;color:rgb(74 222 128/var(--tw-text-opacity,1))}.dark\:text-purple-400:is(.dark *){--tw-text-opacity:1;color:rgb(192 132 252/var(--tw-text-opacity,1))}.dark\:text-slate-200:is(.dark *){--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.dark\:text-slate-400:is(.dark *){--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.dark\:text-slate-500:is(.dark *){--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.dark\:text-white:is(.dark *){--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.dark\:text-yellow-300:is(.dark *){--tw-text-opacity:1;color:rgb(253 224 71/var(--tw-text-opacity,1))}.dark\:shadow-none:is(.dark *){--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.dark\:hover\:bg-slate-600:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(71 85 105/var(--tw-bg-opacity,1))}.dark\:hover\:text-green-400:hover:is(.dark *){--tw-text-opacity:1;color:rgb(74 222 128/var(--tw-text-opacity,1))}.dark\:hover\:text-red-400:hover:is(.dark *){--tw-text-opacity:1;color:rgb(248 113 113/var(--tw-text-opacity,1))}
+
+        /* ── Base transitions ─────────────────────── */
         body { transition: background-color 0.3s, color 0.3s; }
         .timer-display { font-variant-numeric: tabular-nums; }
         .progress-bar { transition: width 1s linear; }
         .btn-action:active { transform: scale(0.95); }
-        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        /* ── Modal ───────────────────────────────── */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(2, 6, 23, 0.72);
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            width: 100%; max-width: 380px; margin: 1rem;
+            transform: scale(0.94) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+            opacity: 0;
+            box-shadow: 0 32px 72px rgba(0,0,0,0.3);
+        }
+        .dark .modal-card { background: #1e293b; }
+        .modal-overlay.open .modal-card { transform: scale(1) translateY(0); opacity: 1; }
+
+        /* ── Auth tabs ───────────────────────────── */
+        .auth-tab {
+            flex: 1; padding: 0.45rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem; font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+            color: #64748b; cursor: pointer; border: none;
+            background: transparent;
+        }
+        .auth-tab.active { background: #2563eb; color: #fff; }
+        .dark .auth-tab:not(.active) { color: #94a3b8; }
+
+        /* ── Modal dark mode extras ──────────────── */
+        .modal-tab-bar {
+            display: flex; gap: 4px; padding: 4px;
+            background: #f1f5f9; border-radius: 12px; margin-bottom: 1.25rem;
+            transition: background 0.2s;
+        }
+        .dark .modal-tab-bar { background: #0f172a; }
+
+        .modal-label {
+            display: block; font-size: 0.75rem; font-weight: 600;
+            color: #64748b; text-transform: uppercase;
+            letter-spacing: 0.05em; margin-bottom: 4px;
+        }
+        .dark .modal-label { color: #64748b; }
+
+        .modal-divider-line { flex: 1; height: 1px; background: #e2e8f0; }
+        .dark .modal-divider-line { background: #334155; }
+
+        .modal-google-btn {
+            width: 100%; margin-top: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 12px;
+            background: #ffffff; cursor: pointer;
+            font-size: 0.9375rem; font-weight: 600; color: #1e293b;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .modal-google-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .dark .modal-google-btn { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+        .dark .modal-google-btn:hover { background: #1e3a5f20; border-color: #475569; }
+
+        .modal-close-btn {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 9999px; border: none; background: transparent;
+            cursor: pointer; color: #94a3b8; transition: background 0.2s, color 0.2s;
+        }
+        .modal-close-btn:hover { background: #f1f5f9; color: #475569; }
+        .dark .modal-close-btn:hover { background: #334155; color: #e2e8f0; }
+
+        .modal-skip-btn {
+            font-size: 0.75rem; color: #94a3b8;
+            background: none; border: none; cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-skip-btn:hover { color: #64748b; }
+        .dark .modal-skip-btn:hover { color: #cbd5e1; }
+
+        /* ── Currency toggle ─────────────────────── */
+        .currency-selector {
+            display: flex; gap: 4px; padding: 3px;
+            background: #f1f5f9; border-radius: 10px;
+        }
+        .dark .currency-selector { background: #0f172a; }
+        .currency-btn {
+            padding: 4px 10px; border-radius: 7px; border: none;
+            font-size: 0.8125rem; font-weight: 700; cursor: pointer;
+            background: transparent; color: #64748b;
+            transition: background 0.18s, color 0.18s;
+        }
+        .currency-btn.active { background: #2563eb; color: #fff; }
+        .dark .currency-btn:not(.active) { color: #94a3b8; }
+        .dark .currency-btn.active { background: #2563eb; color: #fff; }
+
+        /* ── Input styled ────────────────────────── */
+        .input-styled {
+            width: 100%;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 0.625rem;
+            padding: 0.6rem 0.875rem;
+            font-size: 0.9375rem; color: #0f172a;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .dark .input-styled { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+        .input-styled:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+
+        /* ── Toast ───────────────────────────────── */
+        #toast {
+            position: fixed; bottom: 1.5rem; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            z-index: 200; padding: 0.6rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.8125rem; font-weight: 600;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            pointer-events: none; white-space: nowrap;
+            background: #1e293b; color: #f1f5f9;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+        #toast.success { background: #14532d; color: #bbf7d0; }
+        #toast.error   { background: #7f1d1d; color: #fecaca; }
+        #toast.info    { background: #1e3a5f; color: #bfdbfe; }
+
+        /* ── Spinner ─────────────────────────────── */
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── User avatar ─────────────────────────── */
+        .user-avatar {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.6875rem; font-weight: 700; color: #fff;
+            flex-shrink: 0;
+        }
+
+        /* ── Earnings slide-in ───────────────────── */
+        #earningsSection {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.4s ease;
+            opacity: 0;
+        }
+        #earningsSection.show { max-height: 400px; opacity: 1; }
+
+        /* ── Earnings gradient card ──────────────── */
+        .earnings-card {
+            background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+            border-radius: 0.875rem; padding: 1rem 1.125rem;
+            color: #fff;
+        }
+
+        /* ── Auth btn ────────────────────────────── */
+        .auth-login-btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.75rem; font-weight: 600;
+            color: #2563eb;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 9999px;
+            padding: 5px 12px;
+            transition: background 0.2s, color 0.2s;
+            background: transparent; cursor: pointer;
+        }
+        .auth-login-btn:hover { background: #eff6ff; }
+        .dark .auth-login-btn { color: #60a5fa; border-color: #1e3a5f; }
+        .dark .auth-login-btn:hover { background: #1e3a5f30; }
+
+        /* ── Cloud synced badge ──────────────────── */
+        .cloud-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 0.6875rem; font-weight: 600;
+            color: #16a34a; background: #dcfce7;
+            border-radius: 9999px; padding: 2px 8px;
+        }
+        .dark .cloud-badge { color: #4ade80; background: #14532d40; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
 
+    <!-- Toast -->
+    <div id="toast" role="status" aria-live="polite">—</div>
+
+    <!-- ══ LOGIN MODAL ══════════════════════════════════════════ -->
+    <div id="loginModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-card">
+            <div class="flex items-center justify-between mb-5">
+                <h2 id="modalTitle" class="text-lg font-bold text-slate-900 dark:text-white">Sua conta</h2>
+                <button onclick="hideLoginModal()" aria-label="Fechar modal" class="modal-close-btn">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="modal-tab-bar">
+                <button id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Entrar</button>
+                <button id="tabRegister" class="auth-tab" onclick="switchTab('register')">Criar conta</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)" style="display:flex;flex-direction:column;gap:12px;">
+                <div>
+                    <label class="modal-label">E-mail</label>
+                    <input id="loginEmail" type="email" placeholder="seu@email.com" required class="input-styled">
+                </div>
+                <div>
+                    <label class="modal-label">Senha</label>
+                    <input id="loginPassword" type="password" placeholder="••••••••" required minlength="6" class="input-styled">
+                </div>
+                <button id="btnLogin" type="submit"
+                    style="width:100%;background:#2563eb;color:#fff;border:none;padding:10px;border-radius:12px;font-weight:700;font-size:0.9375rem;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;"
+                    onmouseover="if(!this.disabled)this.style.background='#1d4ed8'" onmouseout="if(!this.disabled)this.style.background='#2563eb'">
+                    Entrar
+                </button>
+                <p id="loginError" class="hidden" style="color:#ef4444;font-size:0.8125rem;text-align:center;margin:0;"></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;flex-direction:column;gap:12px;">
+                <div>
+                    <label class="modal-label">Seu nome</label>
+                    <input id="registerName" type="text" placeholder="João Silva" required class="input-styled">
+                </div>
+                <div>
+                    <label class="modal-label">E-mail</label>
+                    <input id="registerEmail" type="email" placeholder="seu@email.com" required class="input-styled">
+                </div>
+                <div>
+                    <label class="modal-label">Senha</label>
+                    <input id="registerPassword" type="password" placeholder="mín. 6 caracteres" required minlength="6" class="input-styled">
+                </div>
+                <button id="btnRegister" type="submit"
+                    style="width:100%;background:#2563eb;color:#fff;border:none;padding:10px;border-radius:12px;font-weight:700;font-size:0.9375rem;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;"
+                    onmouseover="if(!this.disabled)this.style.background='#1d4ed8'" onmouseout="if(!this.disabled)this.style.background='#2563eb'">
+                    Criar conta
+                </button>
+                <p id="registerError" class="hidden" style="color:#ef4444;font-size:0.8125rem;text-align:center;margin:0;"></p>
+            </form>
+
+            <!-- Divider -->
+            <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+                <div class="modal-divider-line"></div>
+                <span style="font-size:0.75rem;color:#94a3b8;white-space:nowrap;">ou continue com</span>
+                <div class="modal-divider-line"></div>
+            </div>
+
+            <!-- Google button -->
+            <button id="btnGoogle" onclick="handleGoogleLogin()" class="modal-google-btn">
+                <!-- Google logo SVG -->
+                <svg width="18" height="18" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Entrar com Google
+            </button>
+
+            <div style="margin-top:12px;text-align:center;">
+                <button onclick="hideLoginModal()" class="modal-skip-btn">
+                    Continuar sem conta (salva só 7 dias)
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ════════════════════════════════════════════════════════ -->
+
     <main class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 relative transition-colors duration-300">
-        
-        <button onclick="toggleTheme()" aria-label="Alternar tema claro e escuro" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-yellow-600 dark:text-yellow-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center shadow-sm z-10">
+
+        <!-- Theme toggle -->
+        <button onclick="toggleTheme()" aria-label="Alternar tema claro e escuro"
+            class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-yellow-600 dark:text-yellow-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition flex items-center justify-center shadow-sm z-10">
             <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
             <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
         </button>
 
         <header class="bg-slate-50 dark:bg-slate-900 p-6 text-center border-b border-slate-200 dark:border-slate-700 transition-colors duration-300">
-            <h1 class="text-2xl font-bold text-blue-700 dark:text-blue-400">Rastreador de Foco</h1>
-            <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Gerencie suas tarefas e tempo</p>
+            <h1 class="text-2xl font-bold text-blue-700 dark:text-blue-400">Gerenciador de Tarefas</h1>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Controle suas horas, tarefas e ganhos</p>
+
+            <!-- Auth area -->
+            <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;">
+                <!-- Guest -->
+                <button id="btnOpenLogin" onclick="showLoginModal()" class="auth-login-btn">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Entrar / Criar conta
+                </button>
+
+                <!-- Logged in (hidden by default) -->
+                <div id="userInfoBar" style="display:none;align-items:center;gap:8px;">
+                    <div class="user-avatar" id="userAvatar">?</div>
+                    <span id="userNameDisplay" style="font-size:0.875rem;font-weight:600;color:#334155;"></span>
+                    <span class="cloud-badge">
+                        <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                        </svg>
+                        Sincronizado
+                    </span>
+                    <button onclick="handleLogout()"
+                        style="font-size:0.75rem;color:#94a3b8;background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:9999px;transition:color 0.2s,background 0.2s;"
+                        onmouseover="this.style.color='#ef4444';this.style.background='#fee2e2'" onmouseout="this.style.color='#94a3b8';this.style.background='transparent'">
+                        Sair
+                    </button>
+                </div>
+            </div>
         </header>
 
         <div class="p-4 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center border-b border-slate-200/50 dark:border-slate-700/50 transition-colors duration-300">
@@ -66,20 +379,17 @@
         </div>
 
         <div class="p-8 flex flex-col items-center relative">
-            
-            <div class="w-full bg-slate-200 dark:bg-slate-700 h-4 rounded-full mb-6 overflow-hidden relative transition-colors" 
-                 role="progressbar" 
-                 aria-label="Progresso do tempo decorrido"
-                 aria-valuemin="0" 
-                 aria-valuemax="100"
-                 id="progressContainer">
+
+            <div class="w-full bg-slate-200 dark:bg-slate-700 h-4 rounded-full mb-6 overflow-hidden relative transition-colors"
+                 role="progressbar" aria-label="Progresso do tempo decorrido"
+                 aria-valuemin="0" aria-valuemax="100" id="progressContainer">
                 <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-blue-500 to-purple-500 w-0"></div>
             </div>
 
             <div class="text-7xl font-bold timer-display tracking-tight text-slate-900 dark:text-white mb-2 transition-colors" id="timerDisplay">
                 00:00
             </div>
-            
+
             <p id="statusText" class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-6 transition-colors">
                 Meta: <span id="targetDisplay">10:00</span>
             </p>
@@ -91,7 +401,7 @@
                     </span>
                     <span id="btnStartText">Iniciar</span>
                 </button>
-                
+
                 <button onclick="resetTimer()" aria-label="Resetar Cronômetro" class="btn-action w-14 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 </button>
@@ -99,137 +409,618 @@
         </div>
 
         <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-t-3xl border-t border-slate-200 dark:border-slate-700 mt-2 transition-colors">
-            <div class="grid grid-cols-2 gap-6">
-                
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center transition-colors shadow-sm">
-                    <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tarefas Feitas</span>
-                    <div class="flex items-center gap-3 mb-2">
-                        <button onclick="manualAdjustTask(-1)" aria-label="Remover tarefa" class="text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition p-1">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </button>
-                        <span id="taskCount" class="text-4xl font-bold text-blue-700 dark:text-blue-400 transition-colors">0</span>
-                        <button onclick="manualAdjustTask(1)" aria-label="Adicionar tarefa" class="text-slate-500 hover:text-green-600 dark:hover:text-green-400 transition p-1">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </button>
+            <div class="flex flex-col gap-4">
+
+                <!-- Stats row -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center transition-colors shadow-sm">
+                        <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tarefas Feitas</span>
+                        <div class="flex items-center gap-3 mb-2">
+                            <button onclick="manualAdjustTask(-1)" aria-label="Remover tarefa" class="text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition p-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+                            <span id="taskCount" class="text-4xl font-bold text-blue-700 dark:text-blue-400 transition-colors">0</span>
+                            <button onclick="manualAdjustTask(1)" aria-label="Adicionar tarefa" class="text-slate-500 hover:text-green-600 dark:hover:text-green-400 transition p-1">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center transition-colors shadow-sm">
+                        <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tempo Total</span>
+                        <span id="totalTimeDisplay" class="text-2xl font-bold text-purple-700 dark:text-purple-400 transition-colors">0m</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-500 mt-1">acumulado</span>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center transition-colors shadow-sm">
-                    <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-2">Tempo Total</span>
-                    <span id="totalTimeDisplay" class="text-2xl font-bold text-purple-700 dark:text-purple-400 transition-colors">0m</span>
-                    <span class="text-xs text-slate-500 dark:text-slate-500 mt-1">acumulado</span>
-                </div>
-            </div>
+                <!-- ══ EARNINGS SECTION (shown when logged in) ════════ -->
+                <div id="earningsSection">
+                    <div class="flex flex-col gap-4">
+                        <!-- Hourly rate input -->
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                                <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold">Valor por Hora</span>
+                                <!-- Currency selector -->
+                                <div class="currency-selector" role="group" aria-label="Selecionar moeda">
+                                    <button id="currBRL" class="currency-btn active" onclick="selectCurrency('BRL')" aria-pressed="true">R$</button>
+                                    <button id="currUSD" class="currency-btn" onclick="selectCurrency('USD')" aria-pressed="false">US$</button>
+                                    <button id="currEUR" class="currency-btn" onclick="selectCurrency('EUR')" aria-pressed="false">€</button>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span id="currencySymbolLabel" style="font-size:0.9375rem;font-weight:700;color:#64748b;min-width:24px;">R$</span>
+                                <input type="number" id="hourlyRateInput" value="0" min="0" step="0.50"
+                                    aria-label="Valor por hora"
+                                    onchange="saveHourlyRate()" oninput="updateEarningsDisplay()"
+                                    style="flex:1;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:8px 12px;font-size:1rem;font-weight:700;color:#0f172a;outline:none;transition:border-color 0.2s;"
+                                    onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e2e8f0'"
+                                    placeholder="0,00">
+                                <span style="font-size:0.9375rem;font-weight:600;color:#64748b;">/hora</span>
+                            </div>
+                        </div>
 
-            <div class="mt-6 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
-                <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-4 block text-center">Histórico (Últimos 7 dias)</span>
-                <div class="relative h-48 w-full">
-                    <canvas id="productivityChart"></canvas>
+                        <!-- Earnings card -->
+                        <div class="earnings-card">
+                            <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                                <div>
+                                    <p style="font-size:0.6875rem;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Ganho Hoje</p>
+                                    <p id="earningsTodayDisplay" style="font-size:1.75rem;font-weight:800;color:#fff;line-height:1;">R$ 0,00</p>
+                                </div>
+                                <div style="text-align:right;">
+                                    <p style="font-size:0.6875rem;font-weight:700;color:#93c5fd;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Esta Semana</p>
+                                    <p id="earningsWeekDisplay" style="font-size:1.25rem;font-weight:700;color:#fff;">R$ 0,00</p>
+                                </div>
+                            </div>
+                            <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2);">
+                                <p style="font-size:0.75rem;color:#bfdbfe;"><span id="totalHoursDisplay">0m</span> trabalhadas hoje</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <!-- ════════════════════════════════════════════════ -->
 
-            <div class="mt-6 text-center">
-                <button onclick="clearAllData()" class="text-xs text-slate-500 hover:text-red-600 underline transition">
-                    Limpar histórico completo
-                </button>
+                <!-- Chart -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
+                    <span class="text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-bold mb-4 block text-center">Histórico (Últimos 7 dias)</span>
+                    <div class="relative h-48 w-full">
+                        <canvas id="productivityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Clear button -->
+                <div class="text-center pb-2">
+                    <button onclick="clearAllData()" class="text-xs text-slate-500 hover:text-red-600 underline transition">
+                        Limpar histórico completo
+                    </button>
+                </div>
+
             </div>
         </div>
+
+    </main>
+
     <script>
-    const ICON_PLAY = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+    // ════════════════════════════════════════════════════════════════
+    // FIREBASE CONFIGURATION
+    // ⚠️  Substitua com suas credenciais do Firebase Console
+    //     Veja o guia de configuração para saber como obter isso.
+    // ════════════════════════════════════════════════════════════════
+    const firebaseConfig = {
+        apiKey:            "AIzaSyB_LJg_FzUP1fDOhos8-gC9BYv3dlq5dZ0",
+        authDomain:        "gerenciador-de-tarefas-ef015.firebaseapp.com",
+        projectId:         "gerenciador-de-tarefas-ef015",
+        storageBucket:     "gerenciador-de-tarefas-ef015.firebasestorage.app",
+        messagingSenderId: "362877760853",
+        appId:             "1:362877760853:web:74c0f44eafadd2d6606bdc",
+        measurementId:     "G-C9HPEM60VF"
+    };
+
+    // ── Firebase init ─────────────────────────────────────────────
+    let auth, db;
+    const FIREBASE_READY = firebaseConfig.apiKey !== "COLE_AQUI_SUA_API_KEY";
+
+    if (FIREBASE_READY) {
+        try {
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db   = firebase.firestore();
+        } catch(e) {
+            console.error("Erro ao inicializar Firebase:", e);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // ICONS
+    // ════════════════════════════════════════════════════════════════
+    const ICON_PLAY  = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
     const ICON_PAUSE = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
 
-    // VARIÁVEIS DE CONTROLE
-    let intervalId = null;
-    let isRunning = false;
-    let timeElapsed = 0; 
-    let startTime = null; // Guardará o timestamp de início
+    // ════════════════════════════════════════════════════════════════
+    // STATE
+    // ════════════════════════════════════════════════════════════════
+    let intervalId   = null;
+    let isRunning    = false;
+    let timeElapsed  = 0;
+    let startTime    = null;
     let totalDuration = 600;
-    let historyData = {}; // Format: { "YYYY-MM-DD": { tasks: 0, totalTime: 0 } }
+    let historyData  = {};
     let chartInstance = null;
+    let currentUser  = null;
+    let hourlyRate   = 0;
+    let selectedCurrency = 'BRL'; // 'BRL' | 'USD' | 'EUR'
+    let isSaving     = false; // debounce cloud saves
 
-    const timerDisplay = document.getElementById('timerDisplay');
-    const progressBar = document.getElementById('progressBar');
+    // DOM refs
+    const timerDisplay      = document.getElementById('timerDisplay');
+    const progressBar       = document.getElementById('progressBar');
     const progressContainer = document.getElementById('progressContainer');
-    const btnStart = document.getElementById('btnStart');
-    const iconContainer = document.getElementById('iconContainer');
-    const btnStartText = document.getElementById('btnStartText');
-    const statusText = document.getElementById('statusText');
-    const targetDisplay = document.getElementById('targetDisplay');
-    const taskCountDisplay = document.getElementById('taskCount');
-    const totalTimeDisplay = document.getElementById('totalTimeDisplay');
-    const inputMinutes = document.getElementById('targetMinutes');
-    const htmlElement = document.documentElement;
-    const defaultTitle = "Rastreador de Foco";
+    const btnStart          = document.getElementById('btnStart');
+    const iconContainer     = document.getElementById('iconContainer');
+    const btnStartText      = document.getElementById('btnStartText');
+    const statusText        = document.getElementById('statusText');
+    const targetDisplay     = document.getElementById('targetDisplay');
+    const taskCountDisplay  = document.getElementById('taskCount');
+    const totalTimeDisplay  = document.getElementById('totalTimeDisplay');
+    const inputMinutes      = document.getElementById('targetMinutes');
+    const htmlElement       = document.documentElement;
+    const hourlyRateInput   = document.getElementById('hourlyRateInput');
+    const defaultTitle      = "Gerenciador de Tarefas";
 
+    // ════════════════════════════════════════════════════════════════
+    // INIT
+    // ════════════════════════════════════════════════════════════════
     function init() {
-        loadData();
+        loadLocalData();
         updateTimerDisplay();
         updateTargetDisplay();
+
         inputMinutes.addEventListener('change', () => {
             saveData();
             updateTargetDisplay();
             if (!isRunning) resetTimer();
         });
 
-        // Garantia extra: quando a aba voltar a ter foco, força a atualização
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && isRunning) {
-                updateTimerFromTimestamp();
-            }
+            if (!document.hidden && isRunning) updateTimerFromTimestamp();
+        });
+
+        // Close modal when clicking backdrop
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) hideLoginModal();
+        });
+
+        // Firebase auth listener
+        if (FIREBASE_READY && auth) {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await onUserLoggedIn(user);
+                } else {
+                    currentUser = null;
+                    onUserLoggedOut();
+                }
+            });
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // MODAL
+    // ════════════════════════════════════════════════════════════════
+    function showLoginModal() {
+        if (!FIREBASE_READY) {
+            showToast('Configure o Firebase primeiro — veja o guia!', 'error');
+            return;
+        }
+        document.getElementById('loginModal').classList.add('open');
+        setTimeout(() => document.getElementById('loginEmail').focus(), 300);
+    }
+
+    function hideLoginModal() {
+        document.getElementById('loginModal').classList.remove('open');
+        clearAuthErrors();
+    }
+
+    function switchTab(tab) {
+        const loginForm    = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabLogin     = document.getElementById('tabLogin');
+        const tabRegister  = document.getElementById('tabRegister');
+        clearAuthErrors();
+        if (tab === 'login') {
+            loginForm.style.display    = 'flex';
+            registerForm.style.display = 'none';
+            tabLogin.classList.add('active');
+            tabRegister.classList.remove('active');
+        } else {
+            loginForm.style.display    = 'none';
+            registerForm.style.display = 'flex';
+            tabLogin.classList.remove('active');
+            tabRegister.classList.add('active');
+        }
+    }
+
+    function clearAuthErrors() {
+        ['loginError','registerError'].forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.textContent = '';
         });
     }
 
-    function getTodayString() {
-        const d = new Date();
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+    function setButtonLoading(btn, loading, originalText) {
+        btn.disabled = loading;
+        btn.innerHTML = loading ? '<span class="spinner"></span>' : originalText;
     }
+
+    // ════════════════════════════════════════════════════════════════
+    // AUTH HANDLERS
+    // ════════════════════════════════════════════════════════════════
+    async function handleLogin(event) {
+        event.preventDefault();
+        const email    = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const btn      = document.getElementById('btnLogin');
+        const errorEl  = document.getElementById('loginError');
+
+        setButtonLoading(btn, true, 'Entrar');
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+            hideLoginModal();
+            showToast('Bem-vindo de volta! ✓', 'success');
+        } catch(e) {
+            errorEl.textContent = translateAuthError(e.code);
+            errorEl.classList.remove('hidden');
+            setButtonLoading(btn, false, 'Entrar');
+        }
+    }
+
+    async function handleRegister(event) {
+        event.preventDefault();
+        const name     = document.getElementById('registerName').value.trim();
+        const email    = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const btn      = document.getElementById('btnRegister');
+        const errorEl  = document.getElementById('registerError');
+
+        setButtonLoading(btn, true, 'Criar conta');
+        try {
+            const cred = await auth.createUserWithEmailAndPassword(email, password);
+            await cred.user.updateProfile({ displayName: name });
+
+            // Salvar perfil inicial no Firestore
+            await db.collection('users').doc(cred.user.uid).set({
+                profile: { name, email, hourlyRate: 0 },
+                history: {}
+            });
+
+            hideLoginModal();
+            showToast('Conta criada! Bem-vindo, ' + name + '! 🎉', 'success');
+
+            // Oferecer importar dados locais
+            if (hasSignificantLocalData()) {
+                setTimeout(() => {
+                    if (confirm('Você tem dados salvos localmente (histórico de tarefas). Deseja importá-los para sua nova conta na nuvem?')) {
+                        importLocalDataToCloud(cred.user.uid);
+                    }
+                }, 600);
+            }
+        } catch(e) {
+            errorEl.textContent = translateAuthError(e.code);
+            errorEl.classList.remove('hidden');
+            setButtonLoading(btn, false, 'Criar conta');
+        }
+    }
+
+    async function handleGoogleLogin() {
+        if (!FIREBASE_READY) { showToast('Configure o Firebase primeiro — veja o guia!', 'error'); return; }
+        const btn = document.getElementById('btnGoogle');
+        const origHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner" style="border-color:rgba(0,0,0,0.2);border-top-color:#1e293b;"></span>';
+        try {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            const cred = await auth.signInWithPopup(provider);
+            const user = cred.user;
+            // Criar perfil no Firestore se for a primeira vez
+            const docRef = db.collection('users').doc(user.uid);
+            const snap   = await docRef.get();
+            if (!snap.exists) {
+                await docRef.set({
+                    profile: { name: user.displayName || '', email: user.email, hourlyRate: 0 },
+                    history: {}
+                });
+                // Oferecer importar dados locais
+                if (hasSignificantLocalData()) {
+                    setTimeout(() => {
+                        if (confirm('Você tem dados salvos localmente. Deseja importá-los para sua conta?')) {
+                            importLocalDataToCloud(user.uid);
+                        }
+                    }, 600);
+                }
+            }
+            hideLoginModal();
+            showToast('Bem-vindo, ' + (user.displayName || user.email) + '! ✓', 'success');
+        } catch(e) {
+            if (e.code !== 'auth/popup-closed-by-user') {
+                showToast(translateAuthError(e.code), 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = origHTML;
+        }
+    }
+
+    async function handleLogout() {
+        if (!FIREBASE_READY || !auth) return;
+        try {
+            await auth.signOut();
+            showToast('Você saiu da sua conta', 'info');
+        } catch(e) {
+            showToast('Erro ao sair', 'error');
+        }
+    }
+
+    function translateAuthError(code) {
+        const map = {
+            'auth/user-not-found':        'Nenhuma conta encontrada com este e-mail.',
+            'auth/wrong-password':        'Senha incorreta.',
+            'auth/invalid-credential':    'E-mail ou senha incorretos.',
+            'auth/email-already-in-use':  'Este e-mail já está cadastrado.',
+            'auth/weak-password':         'A senha deve ter pelo menos 6 caracteres.',
+            'auth/invalid-email':         'Formato de e-mail inválido.',
+            'auth/too-many-requests':     'Muitas tentativas. Aguarde e tente novamente.',
+            'auth/network-request-failed':'Sem conexão com a internet.',
+        };
+        return map[code] || 'Ocorreu um erro. Tente novamente.';
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // AUTH STATE CALLBACKS
+    // ════════════════════════════════════════════════════════════════
+    async function onUserLoggedIn(user) {
+        // Show user bar, hide login btn
+        document.getElementById('btnOpenLogin').style.display = 'none';
+        const bar = document.getElementById('userInfoBar');
+        bar.style.display = 'flex';
+
+        const displayName = user.displayName || user.email.split('@')[0];
+        document.getElementById('userNameDisplay').textContent = displayName;
+        document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+        // Dark mode fix for name
+        document.getElementById('userNameDisplay').style.color =
+            htmlElement.classList.contains('dark') ? '#e2e8f0' : '#334155';
+
+        // Show earnings section
+        document.getElementById('earningsSection').classList.add('show');
+
+        // Load cloud data
+        await loadCloudData(user.uid);
+    }
+
+    function onUserLoggedOut() {
+        document.getElementById('btnOpenLogin').style.display = 'inline-flex';
+        const bar = document.getElementById('userInfoBar');
+        bar.style.display = 'none';
+
+        document.getElementById('earningsSection').classList.remove('show');
+
+        // Reload from localStorage
+        loadLocalData();
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // FIRESTORE
+    // ════════════════════════════════════════════════════════════════
+    async function loadCloudData(uid) {
+        try {
+            const snap = await db.collection('users').doc(uid).get();
+            if (snap.exists) {
+                const data = snap.data();
+                if (data.history) historyData = data.history;
+                if (data.profile) {
+                    hourlyRate = data.profile.hourlyRate || 0;
+                    hourlyRateInput.value = hourlyRate;
+                    if (data.profile.currency) {
+                        selectedCurrency = data.profile.currency;
+                        applyCurrencyUI(selectedCurrency);
+                    }
+                }
+            }
+            // Device-specific prefs from localStorage
+            const localRaw = localStorage.getItem('rws_tracker_data');
+            if (localRaw) {
+                const local = JSON.parse(localRaw);
+                if (local.theme === 'light') htmlElement.classList.remove('dark');
+                else htmlElement.classList.add('dark');
+                if (local.prefMinutes) inputMinutes.value = local.prefMinutes;
+            }
+            const mins = parseInt(inputMinutes.value) || 10;
+            totalDuration = mins * 60;
+            updateStats();
+            updateEarningsDisplay();
+            if (chartInstance) updateChart();
+            else initChart();
+        } catch(e) {
+            console.error('Erro ao carregar nuvem:', e);
+            showToast('Erro ao carregar dados da nuvem', 'error');
+        }
+    }
+
+    async function saveCloudData() {
+        if (!currentUser || !FIREBASE_READY || !db) return;
+        if (isSaving) return;
+        isSaving = true;
+        try {
+            await db.collection('users').doc(currentUser.uid).set({
+                profile: {
+                    name:       currentUser.displayName || '',
+                    email:      currentUser.email,
+                    hourlyRate,
+                    currency:   selectedCurrency
+                },
+                history: historyData
+            }, { merge: true });
+        } catch(e) {
+            console.error('Erro ao salvar nuvem:', e);
+        } finally {
+            isSaving = false;
+        }
+    }
+
+    function hasSignificantLocalData() {
+        try {
+            const raw = localStorage.getItem('rws_tracker_data');
+            if (!raw) return false;
+            const d = JSON.parse(raw);
+            if (!d.history) return false;
+            return Object.values(d.history).some(x => x.tasks > 0 || x.totalTime > 0);
+        } catch { return false; }
+    }
+
+    async function importLocalDataToCloud(uid) {
+        try {
+            const raw = localStorage.getItem('rws_tracker_data');
+            if (!raw) return;
+            const local = JSON.parse(raw);
+            if (!local.history) return;
+
+            const snap = await db.collection('users').doc(uid).get();
+            const cloudHistory = (snap.exists && snap.data().history) ? snap.data().history : {};
+
+            // Merge: cloud data wins on same date, local fills gaps
+            const merged = { ...local.history, ...cloudHistory };
+            await db.collection('users').doc(uid).set({ history: merged }, { merge: true });
+
+            historyData = merged;
+            updateStats();
+            updateChart();
+            showToast('Dados locais importados com sucesso! ✓', 'success');
+        } catch(e) {
+            console.error('Erro ao importar:', e);
+            showToast('Erro ao importar dados locais', 'error');
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // HOURLY RATE, CURRENCY & EARNINGS
+    // ════════════════════════════════════════════════════════════════
+    const CURRENCY_CONFIG = {
+        BRL: { locale: 'pt-BR', code: 'BRL', symbol: 'R$'  },
+        USD: { locale: 'en-US', code: 'USD', symbol: 'US$' },
+        EUR: { locale: 'de-DE', code: 'EUR', symbol: '€'   }
+    };
+
+    function selectCurrency(code) {
+        selectedCurrency = code;
+        applyCurrencyUI(code);
+        updateEarningsDisplay();
+        if (currentUser && FIREBASE_READY) saveCloudData();
+    }
+
+    function applyCurrencyUI(code) {
+        ['BRL','USD','EUR'].forEach(c => {
+            const btn = document.getElementById('curr' + c);
+            if (btn) {
+                btn.classList.toggle('active', c === code);
+                btn.setAttribute('aria-pressed', c === code ? 'true' : 'false');
+            }
+        });
+        const sym = CURRENCY_CONFIG[code]?.symbol || 'R$';
+        const lbl = document.getElementById('currencySymbolLabel');
+        if (lbl) lbl.textContent = sym;
+    }
+
+    async function saveHourlyRate() {
+        hourlyRate = parseFloat(hourlyRateInput.value) || 0;
+        updateEarningsDisplay();
+        if (currentUser && FIREBASE_READY) {
+            await saveCloudData();
+        }
+    }
+
+    function updateEarningsDisplay() {
+        const rate        = parseFloat(hourlyRateInput.value) || 0;
+        const todayData   = getTodayData();
+        const todaySecs   = todayData.totalTime || 0;
+        const todayEarned = (todaySecs / 3600) * rate;
+
+        let weekSecs = 0;
+        for (let i = 0; i < 7; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const ds = getDateString(d);
+            if (historyData[ds]) weekSecs += historyData[ds].totalTime || 0;
+        }
+        const weekEarned = (weekSecs / 3600) * rate;
+
+        document.getElementById('earningsTodayDisplay').textContent = formatCurrency(todayEarned);
+        document.getElementById('earningsWeekDisplay').textContent  = formatCurrency(weekEarned);
+        document.getElementById('totalHoursDisplay').textContent    = formatTotalTime(todaySecs);
+    }
+
+    function formatCurrency(v) {
+        const cfg = CURRENCY_CONFIG[selectedCurrency] || CURRENCY_CONFIG.BRL;
+        try {
+            return new Intl.NumberFormat(cfg.locale, {
+                style: 'currency', currency: cfg.code,
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+            }).format(v);
+        } catch {
+            return cfg.symbol + ' ' + v.toFixed(2);
+        }
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // TOAST
+    // ════════════════════════════════════════════════════════════════
+    let toastTimer;
+    function showToast(msg, type = 'info') {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className   = type;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // TIMER
+    // ════════════════════════════════════════════════════════════════
+    function getDateString(d) {
+        const y  = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const da = String(d.getDate()).padStart(2, '0');
+        return `${y}-${mo}-${da}`;
+    }
+
+    function getTodayString() { return getDateString(new Date()); }
 
     function getTodayData() {
         const today = getTodayString();
-        if (!historyData[today]) {
-            historyData[today] = { tasks: 0, totalTime: 0 };
-        }
+        if (!historyData[today]) historyData[today] = { tasks: 0, totalTime: 0 };
         return historyData[today];
     }
 
     function startTimer() {
-        const mins = parseInt(inputMinutes.value) || 10;
+        const mins    = parseInt(inputMinutes.value) || 10;
         totalDuration = mins * 60;
-
-        isRunning = true;
-        
-        // LÓGICA CRÍTICA: Define o início baseado no tempo que já passou
-        // Date.now() dá o tempo em milisegundos.
-        startTime = Date.now() - (timeElapsed * 1000);
+        isRunning     = true;
+        startTime     = Date.now() - (timeElapsed * 1000);
 
         btnStart.classList.remove('bg-green-700', 'hover:bg-green-600');
         btnStart.classList.add('bg-yellow-600', 'hover:bg-yellow-500');
         iconContainer.innerHTML = ICON_PAUSE;
         btnStartText.textContent = "Pausar";
-        
-        statusText.innerHTML = `Meta: <span class="font-bold">${formatTime(totalDuration)}</span>`;
-        statusText.className = "text-blue-700 dark:text-blue-400 text-sm font-medium mb-6"; 
+        statusText.innerHTML     = `Meta: <span class="font-bold">${formatTime(totalDuration)}</span>`;
+        statusText.className     = "text-blue-700 dark:text-blue-400 text-sm font-medium mb-6";
 
-        intervalId = setInterval(() => {
-            updateTimerFromTimestamp();
-        }, 100); // Roda mais rápido para suavidade, mas o cálculo é via relógio global
+        intervalId = setInterval(updateTimerFromTimestamp, 100);
     }
 
     function updateTimerFromTimestamp() {
         if (!isRunning) return;
-
-        // Calcula quantos segundos se passaram desde o startTime até AGORA
-        const currentTime = Date.now();
-        timeElapsed = Math.floor((currentTime - startTime) / 1000);
-        
+        timeElapsed = Math.floor((Date.now() - startTime) / 1000);
         updateTimerDisplay();
-
-        if (timeElapsed >= totalDuration) {
-            finishTask();
-        }
+        if (timeElapsed >= totalDuration) finishTask();
     }
 
     function pauseTimer() {
@@ -238,58 +1029,53 @@
         updateTimerDisplay();
         btnStart.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
         btnStart.classList.add('bg-green-700', 'hover:bg-green-600');
-        iconContainer.innerHTML = ICON_PLAY;
+        iconContainer.innerHTML  = ICON_PLAY;
         btnStartText.textContent = "Continuar";
     }
 
     function resetTimer() {
         pauseTimer();
-        timeElapsed = 0;
-        startTime = null; 
-        const mins = parseInt(inputMinutes.value) || 10;
+        timeElapsed   = 0;
+        startTime     = null;
+        const mins    = parseInt(inputMinutes.value) || 10;
         totalDuration = mins * 60;
         updateTimerDisplay();
         updateTargetDisplay();
-        
-        iconContainer.innerHTML = ICON_PLAY;
+        iconContainer.innerHTML  = ICON_PLAY;
         btnStartText.textContent = "Iniciar";
-        statusText.innerHTML = `Meta: <span>${formatTime(totalDuration)}</span>`;
-        statusText.className = "text-slate-600 dark:text-slate-400 text-sm font-medium mb-6";
-        progressBar.style.width = '0%';
+        statusText.innerHTML     = `Meta: <span>${formatTime(totalDuration)}</span>`;
+        statusText.className     = "text-slate-600 dark:text-slate-400 text-sm font-medium mb-6";
+        progressBar.style.width  = '0%';
         progressContainer.setAttribute('aria-valuenow', '0');
         document.title = defaultTitle;
     }
 
-    // --- FUNÇÕES DE UTILITÁRIO MANTIDAS ---
-
     function saveData() {
+        // Always save device prefs + local history backup
         const data = {
-            history: historyData,
+            history:    historyData,
             prefMinutes: inputMinutes.value,
-            theme: htmlElement.classList.contains('dark') ? 'dark' : 'light'
+            theme:      htmlElement.classList.contains('dark') ? 'dark' : 'light'
         };
         localStorage.setItem('rws_tracker_data', JSON.stringify(data));
+
+        // Cloud save if logged in
+        if (currentUser && FIREBASE_READY) saveCloudData();
+
         updateChart();
+        if (currentUser) updateEarningsDisplay();
     }
 
-    function loadData() {
-        const saved = localStorage.getItem('rws_tracker_data');
-        if (saved) {
-            const data = JSON.parse(saved);
-            
-            // Migração do formato antigo para o novo formato de histórico
+    function loadLocalData() {
+        const raw = localStorage.getItem('rws_tracker_data');
+        if (raw) {
+            const data = JSON.parse(raw);
+            // Migrate old format
             if (data.tasks !== undefined || data.totalTime !== undefined) {
                 const today = getTodayString();
-                historyData[today] = {
-                    tasks: data.tasks || 0,
-                    totalTime: data.totalTime || 0
-                };
+                historyData[today] = { tasks: data.tasks || 0, totalTime: data.totalTime || 0 };
             }
-            
-            if (data.history) {
-                historyData = data.history;
-            }
-
+            if (data.history)    historyData = data.history;
             if (data.prefMinutes) inputMinutes.value = data.prefMinutes;
             if (data.theme === 'light') htmlElement.classList.remove('dark');
             else htmlElement.classList.add('dark');
@@ -301,23 +1087,29 @@
     }
 
     function clearAllData() {
-        if(confirm("Tem certeza? Isso vai zerar TODO o seu histórico de tarefas e tempo acumulado.")) {
-            historyData = {};
-            saveData();
-            updateStats();
-            resetTimer();
-        }
+        if (!confirm("Tem certeza? Isso vai zerar TODO o seu histórico de tarefas e tempo acumulado.")) return;
+        historyData = {};
+        saveData();
+        updateStats();
+        if (currentUser) updateEarningsDisplay();
+        resetTimer();
+        showToast('Histórico apagado', 'info');
     }
 
     function toggleTheme() {
         htmlElement.classList.toggle('dark');
+        // Fix user name color on theme toggle
+        if (currentUser) {
+            document.getElementById('userNameDisplay').style.color =
+                htmlElement.classList.contains('dark') ? '#e2e8f0' : '#334155';
+        }
         saveData();
     }
 
     function formatTime(seconds) {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
-        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
 
     function formatTotalTime(seconds) {
@@ -336,39 +1128,32 @@
     function updateTimerDisplay() {
         const formatted = formatTime(timeElapsed);
         timerDisplay.textContent = formatted;
-        
-        if (isRunning) document.title = `${formatted} - Foco`;
-        else if (timeElapsed > 0) document.title = `Pausado (${formatted})`;
-        else document.title = defaultTitle;
+        if (isRunning)          document.title = `${formatted} - Foco`;
+        else if (timeElapsed>0) document.title = `Pausado (${formatted})`;
+        else                    document.title = defaultTitle;
 
-        let progressPercent = (timeElapsed / totalDuration) * 100;
-        if (progressPercent > 100) progressPercent = 100;
-        
-        progressBar.style.width = `${progressPercent}%`;
-        progressContainer.setAttribute('aria-valuenow', Math.round(progressPercent));
+        let pct = (timeElapsed / totalDuration) * 100;
+        if (pct > 100) pct = 100;
+        progressBar.style.width = `${pct}%`;
+        progressContainer.setAttribute('aria-valuenow', Math.round(pct));
     }
 
     function toggleTimer() {
-        if (isRunning) pauseTimer();
-        else startTimer();
+        if (isRunning) pauseTimer(); else startTimer();
     }
 
     function finishTask() {
         playAlarm();
         pauseTimer();
-        
         const todayData = getTodayData();
         todayData.tasks++;
         const mins = parseInt(inputMinutes.value) || 10;
         todayData.totalTime += (mins * 60);
-        
         updateStats();
         saveData();
-        
         statusText.textContent = "Tarefa Concluída!";
-        statusText.className = "text-green-700 dark:text-green-400 text-sm font-bold mb-6";
+        statusText.className   = "text-green-700 dark:text-green-400 text-sm font-bold mb-6";
         document.title = "Concluído! ✅";
-        
         setTimeout(() => { resetTimer(); }, 3000);
     }
 
@@ -390,66 +1175,61 @@
     }
 
     function updateStats() {
-        const todayData = getTodayData();
-        taskCountDisplay.textContent = todayData.tasks;
-        totalTimeDisplay.textContent = formatTotalTime(todayData.totalTime);
+        const d = getTodayData();
+        taskCountDisplay.textContent = d.tasks;
+        totalTimeDisplay.textContent = formatTotalTime(d.totalTime);
     }
 
     function adjustTimeInput(val) {
-        let current = parseInt(inputMinutes.value) || 10;
-        current += val;
-        if (current < 1) current = 1;
-        inputMinutes.value = current;
+        let v = parseInt(inputMinutes.value) || 10;
+        v += val;
+        if (v < 1) v = 1;
+        inputMinutes.value = v;
         saveData();
         updateTargetDisplay();
         if (!isRunning) resetTimer();
     }
 
     function playAlarm() {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        const now = ctx.currentTime;
-        const gainNode = ctx.createGain();
-        gainNode.connect(ctx.destination);
-        gainNode.gain.setValueAtTime(0.3, now);
-
-        const playNote = (freq, time, duration) => {
-            const osc = ctx.createOscillator();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, time);
-            osc.connect(gainNode);
-            osc.start(time);
-            osc.stop(time + duration);
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        const ctx      = new AC();
+        const now      = ctx.currentTime;
+        const gain     = ctx.createGain();
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.3, now);
+        const note = (f, t, d) => {
+            const o = ctx.createOscillator();
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(f, t);
+            o.connect(gain);
+            o.start(t); o.stop(t + d);
         };
-
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        const spacing = 0.15;
-
-        playNote(notes[0], now, spacing);
-        playNote(notes[1], now + spacing, spacing);
-        playNote(notes[2], now + spacing * 2, spacing);
-        playNote(notes[3], now + spacing * 3, spacing * 3);
-
-        const secondPass = now + 0.8;
-        playNote(notes[0], secondPass, spacing);
-        playNote(notes[1], secondPass + spacing, spacing);
-        playNote(notes[2], secondPass + spacing * 2, spacing);
-        playNote(notes[3], secondPass + spacing * 3, 1.5);
-
-        gainNode.gain.setValueAtTime(0.3, secondPass + 0.5);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, secondPass + 2.0);
+        const n = [523.25, 659.25, 783.99, 1046.50], s = 0.15;
+        note(n[0], now,         s);
+        note(n[1], now+s,       s);
+        note(n[2], now+s*2,     s);
+        note(n[3], now+s*3,     s*3);
+        const p2 = now + 0.8;
+        note(n[0], p2,          s);
+        note(n[1], p2+s,        s);
+        note(n[2], p2+s*2,      s);
+        note(n[3], p2+s*3,      1.5);
+        gain.gain.setValueAtTime(0.3, p2+0.5);
+        gain.gain.exponentialRampToValueAtTime(0.0001, p2+2.0);
     }
 
-    // --- CHART JS LOGIC ---
+    // ════════════════════════════════════════════════════════════════
+    // CHART
+    // ════════════════════════════════════════════════════════════════
     function initChart() {
         const canvas = document.getElementById('productivityChart');
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        
-        const isDark = htmlElement.classList.contains('dark');
-        const textColor = isDark ? '#94a3b8' : '#64748b'; // slate-400 : slate-500
-        const gridColor = isDark ? 'rgba(51, 65, 85, 0.5)' : 'rgba(226, 232, 240, 0.8)'; // slate-700/50 : slate-200/80
+        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+        const ctx      = canvas.getContext('2d');
+        const isDark   = htmlElement.classList.contains('dark');
+        const txtColor = isDark ? '#94a3b8' : '#64748b';
+        const gridClr  = isDark ? 'rgba(51,65,85,0.5)' : 'rgba(226,232,240,0.8)';
 
         chartInstance = new Chart(ctx, {
             type: 'bar',
@@ -459,88 +1239,62 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return formatTotalTime(context.raw * 60) + " focados";
-                            }
-                        }
-                    }
+                    tooltip: { callbacks: { label: c => formatTotalTime(c.raw * 60) + " focados" } }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: { color: textColor },
-                        grid: { color: gridColor },
-                        title: { display: true, text: 'Minutos', color: textColor, font: { size: 10 } }
+                        ticks: { color: txtColor },
+                        grid:  { color: gridClr },
+                        title: { display: true, text: 'Minutos', color: txtColor, font: { size: 10 } }
                     },
-                    x: {
-                        ticks: { color: textColor },
-                        grid: { display: false }
-                    }
+                    x: { ticks: { color: txtColor }, grid: { display: false } }
                 }
             }
         });
 
-        // Observer para atualizar cores do gráfico quando trocar tema claro/escuro
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.attributeName === 'class' && chartInstance) {
-                    const isDarkTheme = htmlElement.classList.contains('dark');
-                    const newTextColor = isDarkTheme ? '#94a3b8' : '#64748b';
-                    const newGridColor = isDarkTheme ? 'rgba(51, 65, 85, 0.5)' : 'rgba(226, 232, 240, 0.8)';
-                    chartInstance.options.scales.x.ticks.color = newTextColor;
-                    chartInstance.options.scales.y.ticks.color = newTextColor;
-                    chartInstance.options.scales.y.grid.color = newGridColor;
-                    chartInstance.options.scales.y.title.color = newTextColor;
-                    chartInstance.update();
-                }
-            });
+        const obs = new MutationObserver(() => {
+            if (!chartInstance) return;
+            const dk  = htmlElement.classList.contains('dark');
+            const tc  = dk ? '#94a3b8' : '#64748b';
+            const gc  = dk ? 'rgba(51,65,85,0.5)' : 'rgba(226,232,240,0.8)';
+            chartInstance.options.scales.x.ticks.color         = tc;
+            chartInstance.options.scales.y.ticks.color         = tc;
+            chartInstance.options.scales.y.grid.color          = gc;
+            chartInstance.options.scales.y.title.color         = tc;
+            chartInstance.update();
         });
-        observer.observe(htmlElement, { attributes: true });
+        obs.observe(htmlElement, { attributes: true });
     }
 
     function updateChart() {
-        if (chartInstance) {
-            chartInstance.data = getChartData();
-            chartInstance.update();
-        }
+        if (chartInstance) { chartInstance.data = getChartData(); chartInstance.update(); }
     }
 
     function getChartData() {
-        const labels = [];
-        const data = [];
-        
-        // Loop last 7 days
+        const labels = [], data = [];
         for (let i = 6; i >= 0; i--) {
-            const d = new Date();
+            const d  = new Date();
             d.setDate(d.getDate() - i);
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
-            
-            labels.push(`${day}/${month}`);
-            
-            if (historyData[dateStr]) {
-                data.push(Math.round(historyData[dateStr].totalTime / 60)); // minutos
-            } else {
-                data.push(0);
-            }
+            const ds = getDateString(d);
+            const mo = String(d.getMonth() + 1).padStart(2, '0');
+            const da = String(d.getDate()).padStart(2, '0');
+            labels.push(`${da}/${mo}`);
+            data.push(historyData[ds] ? Math.round(historyData[ds].totalTime / 60) : 0);
         }
-        
         return {
-            labels: labels,
+            labels,
             datasets: [{
                 label: 'Minutos Focados',
-                data: data,
-                backgroundColor: 'rgba(59, 130, 246, 0.8)', // blue-500
-                hoverBackgroundColor: 'rgba(37, 99, 235, 1)', // blue-600
+                data,
+                backgroundColor:      'rgba(59,130,246,0.8)',
+                hoverBackgroundColor: 'rgba(37,99,235,1)',
                 borderRadius: 4
             }]
         };
     }
 
+    // ── Start ─────────────────────────────────────────────────────
     init();
     </script>
 </body>
