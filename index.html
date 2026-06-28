@@ -32,6 +32,42 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .panorama-body {
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+        }
+        .panorama-body.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .panorama-chevron {
+            transition: transform 0.3s;
+        }
+        .panorama-open .panorama-chevron {
+            transform: rotate(180deg);
+        }
+        .panorama-stat {
+            flex: 1;
+            background: rgba(148, 163, 184, 0.05);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+        }
+        .panorama-stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+        .panorama-stat-value {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .dark .panorama-stat-label { color: #94a3b8; }
+    </style>
 </head>
 
 <body

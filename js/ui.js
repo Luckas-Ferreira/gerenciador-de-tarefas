@@ -108,8 +108,8 @@
 
         async function fetchExchangeRates() {
             try {
-                // Free, no-key API: rates relative to BRL
-                const res = await fetch('https://api.frankfurter.app/latest?base=BRL&symbols=USD,EUR');
+                // Free, no-key API: rates relative to BRL (open.er-api supports BRL base and CORS)
+                const res = await fetch('https://open.er-api.com/v6/latest/BRL');
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const json = await res.json();
                 // json.rates = { USD: 0.1845, EUR: 0.1673 } (how many USD/EUR per 1 BRL)

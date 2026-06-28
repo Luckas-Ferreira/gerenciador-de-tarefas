@@ -114,6 +114,12 @@
 
             updateChart();
             if (currentUser) updateEarningsDisplay();
+
+            // Re-render panorama if open
+            const panoramaBody = document.getElementById('panoramaBody');
+            if (panoramaBody && panoramaBody.classList.contains('open') && typeof renderPanorama === 'function') {
+                renderPanorama();
+            }
         }
 
         function loadLocalData() {
